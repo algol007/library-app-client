@@ -7,8 +7,16 @@
         <button class="delete" aria-label="close" v-on:click="showModal"></button>
       </header>
       <section class="modal-card-body">
-        <Input name="Url Image"/>
         <Input name="Title"/>
+        <Input name="Url Image"/>
+        <Input name="Author"/>
+        <Input name="ISBN"/>
+        <Input name="Total Page"/>
+        <Input name="Category"/>
+        <Input name="Price"/>
+        <Input name="Language"/>
+        <Input name="Penerbit"/>
+        <Input name="Tahun Terbit"/>
         <Textarea name="Description" />
       </section>
       <footer class="modal-card-foot">
