@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard">
-    <Navbar/>
+    <Navbar v-if="isLogin" />
+    <HomeNav v-else/>
     <Slider/>
     <div class="book">
       <h1>List Book</h1>
@@ -22,6 +23,7 @@ import Navbar from '../components/Navbar.vue';
 import Slider from '../components/Slider.vue';
 import Card from '../components/Card.vue';
 import Pagination from '../components/Pagination.vue';
+import HomeNav from '../components/HomeNav.vue';
 
 export default {
   name: 'Dashboard',
@@ -30,9 +32,11 @@ export default {
     Slider,
     Card,
     Pagination,
+    HomeNav,
   },
   data() {
     return {
+      isLogin: false,
       books: [],
     };
   },
@@ -42,6 +46,7 @@ export default {
         .then((res) => {
           this.books = res.data.books.rows;
           console.log(res.data.books.rows);
+          console.log(this.isLogin);
         })
         .catch(() => {
           console.log('Error when load data!');
