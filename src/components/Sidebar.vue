@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.removeItem('isLogin');
+      localStorage.removeItem('items');
       this.$router.push('/auth/login');
     },
     sidebarHide() {
@@ -154,6 +154,7 @@ export default {
         })
         .then((res) => {
           console.log(res);
+          this.$router.go();
           this.$swal.fire({
             icon: 'success',
             html: `Book ${this.title} has been created!`,

@@ -86,7 +86,7 @@
       <ul class="pagination is-centered" role="navigation" aria-label="pagination">
         <li><button class="pagination-previous" @click="prevPages">Previous</button></li>
           <li class="pagination-gap" v-for="page in this.totalPage" :key="page.id">
-            <div class="pagination-link" :page="page">{{ page }}</div>
+            <div class="pagination-link" :pag="page.id" @click="pages">{{ page }}</div>
           </li>
         <li><button class="pagination-next" @click="nextPages">Next page</button></li>
         <!-- <ul class="pagination-list" v-for="page in this.totalPage" :key="page.id"> -->
@@ -121,12 +121,14 @@ export default {
       isLogin: false,
       books: [],
       currentPage: 1,
-      totalPage: null,
+      totalPage: [],
       offset: null,
       limit: 8,
       sort: null,
       search: null,
       name: null,
+      url: 'http://localhost:5000/api/library/book?page=',
+      pag: null,
     };
   },
   created() {
@@ -135,6 +137,9 @@ export default {
     this.isLogin = this.items.isLogin;
   },
   methods: {
+    pages() {
+      console.log(this.pag);
+    },
     sidebarShow() {
       const sidebar = document.querySelector('.sidebar');
       sidebar.classList.toggle('show-sidebar');
@@ -162,26 +167,29 @@ export default {
         });
     },
     getAllBooks() {
+      // this.url = `http://localhost:5000/api/library/book?page=${this.currentPage}`;
+      // console.log(this.url);
       axios
-        .get('http://localhost:5000/api/library/book')
+        .get(this.url + this.currentPage)
         // .get('http://localhost:5000/api/library/book?page=2')
         .then((res) => {
           this.totalPage = Math.ceil(res.data.books.count / this.limit);
           this.books = res.data.books.rows;
           console.log(res.data.books.rows);
           console.log(this.books.length);
-          console.log(this.currentPage);
+          // console.log(this.currentPage);
         })
         .catch(() => {
           console.log('Error when load data!');
         });
     },
     getBooksByTitle() {
+      const title = '&title=ASC';
       axios
-        .get('http://localhost:5000/api/library/book?page=1&title=ASC')
+        .get(this.url + this.currentPage + title)
         .then((res) => {
           this.books = res.data.books.rows;
-          console.log(res.data.books.rows);
+          // console.log(res.data.books.rows);
         })
         .catch(() => {
           console.log('Error when load data!');
@@ -236,26 +244,18 @@ export default {
     nextPages() {
       if (this.currentPage === this.totalPage) {
         this.currentPage = this.totalPage;
-        console.log(this.currentPage);
-        console.log(this.offset);
       } else {
         this.currentPage += 1;
-        this.offset = (this.currentPage * this.limit);
-        console.log(this.currentPage);
-        console.log(this.offset);
       }
+      // this.getAllBooks();
     },
     prevPages() {
       if (this.currentPage === 1) {
         this.currentPage = 1;
-        console.log(this.currentPage);
-        console.log(this.offset);
       } else {
         this.currentPage -= 1;
-        this.offset = (this.currentPage * this.limit);
-        console.log(this.currentPage);
-        console.log(this.offset);
       }
+      // this.getAllBooks();
     },
   },
   mounted() {
