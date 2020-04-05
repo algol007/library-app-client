@@ -85,8 +85,9 @@
       </div>
       <ul class="pagination is-centered" role="navigation" aria-label="pagination">
         <li><button class="pagination-previous" @click="prevPages">Previous</button></li>
-          <li class="pagination-gap" v-for="page in this.totalPage" :key="page.id">
-            <div class="pagination-link" :pag="page.id" @click="pages">{{ page }}</div>
+          <li class="pagination-gap" v-for="page in this.totalPage" :key="page.id"
+          @click="pages(page)">
+            <div class="pagination-link" v>{{ page }}</div>
           </li>
         <li><button class="pagination-next" @click="nextPages">Next page</button></li>
         <!-- <ul class="pagination-list" v-for="page in this.totalPage" :key="page.id"> -->
@@ -127,8 +128,8 @@ export default {
       sort: null,
       search: null,
       name: null,
+      // role: null,
       url: 'http://localhost:5000/api/library/book?page=',
-      pag: null,
     };
   },
   created() {
@@ -137,8 +138,25 @@ export default {
     this.isLogin = this.items.isLogin;
   },
   methods: {
-    pages() {
-      console.log(this.pag);
+    pages(id) {
+      // const active = document.querySelector('.pagination-link');
+      // if (this.currentPage === id) {
+      //   active.classList.add('is-current');
+      // }
+      this.currentPage = 0 + id;
+      axios
+        .get(this.url + this.currentPage)
+        // .get('http://localhost:5000/api/library/book?page=2')
+        .then((res) => {
+          this.totalPage = Math.ceil(res.data.books.count / this.limit);
+          this.books = res.data.books.rows;
+          console.log(res.data.books.rows);
+          console.log(this.books.length);
+          // console.log(this.currentPage);
+        })
+        .catch(() => {
+          console.log('Error when load data!');
+        });
     },
     sidebarShow() {
       const sidebar = document.querySelector('.sidebar');
@@ -153,18 +171,6 @@ export default {
       const dropdown2 = document.querySelector('.dua');
       dropdown2.classList.toggle('is-active');
       console.log(this.sort);
-    },
-    getUserById() {
-      axios
-        .get(`http://localhost:5000/api/library/user/${this.items.id}`)
-        .then((res) => {
-          console.log(res);
-          this.name = res.data.user.name;
-          // console.log(res.data.user.name);
-        })
-        .catch(() => {
-          console.log('Error when load data!');
-        });
     },
     getAllBooks() {
       // this.url = `http://localhost:5000/api/library/book?page=${this.currentPage}`;
@@ -247,7 +253,7 @@ export default {
       } else {
         this.currentPage += 1;
       }
-      // this.getAllBooks();
+      this.getAllBooks();
     },
     prevPages() {
       if (this.currentPage === 1) {
@@ -255,12 +261,11 @@ export default {
       } else {
         this.currentPage -= 1;
       }
-      // this.getAllBooks();
+      this.getAllBooks();
     },
   },
   mounted() {
     this.getAllBooks();
-    this.getUserById();
   },
 };
 </script>
