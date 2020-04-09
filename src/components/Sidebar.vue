@@ -30,8 +30,9 @@
     <div class="sidebar-menu">
       <p>Explore</p>
       <p><router-link to="/history" class="menu-list">History</router-link></p>
-      <p data-toggle="modal" @click="showModal" v-if="this.role == 'admin'">Add Book*</p>
-      <p class="none" v-else>Add Book*</p>
+      <!-- <p data-toggle="modal" @click="showModal" v-if="this.role == 'admin'">Add Book*</p> -->
+      <p data-toggle="modal" @click="showModal">Add Book*</p>
+      <!-- <p class="none" v-else>Add Book*</p> -->
       <p @click="logout">Logout</p>
     </div>
     <!-- Sidebar Menu -->
@@ -42,30 +43,32 @@
           <p class="modal-card-title">Add Book</p>
           <button class="delete" aria-label="close" @click="showModal"></button>
         </header>
-        <section class="modal-card-body">
+        <form class="modal-card-body">
           <div class="form-login">
             <label for="title">Title</label>
-            <input name="Title" id="title" placeholder="Title" v-model="title"/>
+            <input name="Title" id="title" placeholder="Title" v-model="title" required/>
           </div>
           <div class="form-login">
             <label for="image">Image</label>
-            <input name="image" id="image" placeholder="Image" v-model="image"/>
+            <input type="file" name="image" id="image" ref="file" @change="upload"
+            required/>
           </div>
           <div class="form-login">
             <label for="author">Author</label>
-            <input name="author" id="author" placeholder="Author" v-model="author"/>
+            <input name="author" id="author" placeholder="Author" v-model="author" required/>
           </div>
           <div class="form-login">
             <label for="isbn">ISBN</label>
-            <input name="isbn" id="isbn" placeholder="ISBN" v-model="isbn"/>
+            <input name="isbn" id="isbn" placeholder="ISBN" v-model="isbn" required/>
           </div>
           <div class="form-login">
             <label for="totalPage">Total Page</label>
-            <input name="totalPage" id="totalPage" placeholder="Total Page" v-model="totalPage"/>
+            <input name="totalPage" id="totalPage" placeholder="Total Page" v-model="totalPage"
+            required/>
           </div>
           <div class="form-login">
             <label for="categoryId">Category</label>
-            <select name="categoryId" id="categoryId" v-model="categoryId">
+            <select name="categoryId" id="categoryId" v-model="categoryId" required>
               <option value="1">Novel</option>
               <option value="2">Komik</option>
               <option value="3">Sastra</option>
@@ -82,31 +85,32 @@
           </div>
           <div class="form-login">
             <label for="price">Price</label>
-            <input name="price" id="price" placeholder="Price" v-model="price"/>
+            <input name="price" id="price" placeholder="Price" v-model="price" required/>
           </div>
           <div class="form-login">
             <label for="language">Language</label>
-            <input name="language" id="language" placeholder="Language" v-model="language"/>
+            <input name="language" id="language" placeholder="Language" v-model="language"
+            required/>
           </div>
           <div class="form-login">
             <label for="publishedBy">Publisher</label>
             <input name="publishedBy" id="publishedBy" placeholder="Publisher"
-            v-model="publishedBy"/>
+            v-model="publishedBy" required/>
           </div>
           <div class="form-login">
             <label for="publishedAt">Published On</label>
             <input name="publishedAt" id="publishedAt" placeholder="Published On"
-            v-model="publishedAt"/>
+            v-model="publishedAt" required/>
           </div>
           <div class="form-login">
             <label for="description">Description</label>
             <textarea name="description" id="description" placeholder="Description"
             v-model="description"
-            rows="5"/>
+            rows="5" required/>
           </div>
-        </section>
+        </form>
         <footer class="modal-card-foot">
-          <button class="button is-warning button-save" @click="addBook">Save</button>
+          <button class="button is-warning button-save" type="submit" @click="addBook">Save</button>
         </footer>
       </div>
     </div>
@@ -143,12 +147,16 @@ export default {
   },
   created() {
     this.items = JSON.parse(localStorage.getItem('items'));
-    // console.log(this.items);
+    // console.log(this.items.id);
   },
   mounted() {
     this.getUserById();
   },
   methods: {
+    upload() {
+      const file = this.$refs.file.files[0];
+      this.image = file;
+    },
     logout() {
       localStorage.removeItem('items');
       this.$router.push('/auth/login');
@@ -162,30 +170,33 @@ export default {
       axios
         .get(`http://localhost:5000/api/library/user/${this.items.id}`)
         .then((res) => {
-          // console.log(res);
+          console.log(res);
           this.name = res.data.user.name;
           this.role = res.data.user.role;
-          // console.log(res.data.user.name);
+          localStorage.items = JSON.stringify({
+            isLogin: true, id: res.data.user.id, role: this.role,
+          });
+          // console.log(res.data.user.role);
         })
         .catch(() => {
           // console.log('Error when load data!');
         });
     },
-    addBook() {
+    async addBook() {
+      const formData = new FormData();
+      formData.append('title', this.title);
+      formData.append('image', this.image);
+      formData.append('author', this.author);
+      formData.append('isbn', this.isbn);
+      formData.append('totalPage', this.totalPage);
+      formData.append('categoryId', this.categoryId);
+      formData.append('price', this.price);
+      formData.append('description', this.description);
+      formData.append('language', this.language);
+      formData.append('publishedBy', this.publishedBy);
+      formData.append('publishedAt', this.publishedAt);
       axios
-        .post('http://localhost:5000/api/library/admin/book', {
-          title: this.title,
-          image: this.image,
-          author: this.author,
-          isbn: this.isbn,
-          totalPage: this.totalPage,
-          categoryId: this.categoryId,
-          price: this.price,
-          description: this.description,
-          language: this.language,
-          publishedBy: this.publishedBy,
-          publishedAt: this.publishedAt,
-        })
+        .post('http://localhost:5000/api/library/admin/book', formData)
         .then(() => {
           // console.log(res);
           this.$router.go();
@@ -200,8 +211,8 @@ export default {
           modal.classList.toggle('is-active');
           sidebar.classList.toggle('show-sidebar');
         })
-        .catch(() => {
-          // console.log(err);
+        .catch((err) => {
+          console.log(err);
         });
     },
     showModal() {

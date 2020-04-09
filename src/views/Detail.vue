@@ -13,7 +13,6 @@
       </div>
       <div class="detail-cover" :style="img"></div>
       <div class="detail-book" :style="img"></div>
-      <!-- <Modal modalTitle="Edit Book" save="addBook"/> -->
     </div>
     <div class="description">
       <div class="column is-9 desc">
@@ -21,7 +20,7 @@
           <div class="column desc-box">
             <div class="category">
               <button class="button is-rounded is-warning">
-                {{ book.bookCategory.name }}
+                {{ this.name }}
                 </button>
             </div>
             <div class="desc-title">{{ book.title }}</div>
@@ -132,6 +131,7 @@ export default {
   data() {
     return {
       book: [],
+      name: null,
       bookId: null,
       isLogin: false,
       userId: null,
@@ -140,7 +140,7 @@ export default {
   },
   created() {
     this.items = JSON.parse(localStorage.getItem('items'));
-    // console.log(this.items);
+    console.log(this.items);
     this.role = this.items.role;
     this.userId = this.items.id;
     this.isLogin = this.items.isLogin;
@@ -224,11 +224,12 @@ export default {
     getBookById() {
       axios.get(`http://localhost:5000/api/library/book/${this.$route.params.id}`)
         .then((res) => {
-          this.book = res.data.book;
-          // console.log(res);
+          this.book = res.data.data;
+          this.name = this.book.bookCategory.name;
+          console.log(this.name);
         })
-        .catch(() => {
-          // console.log('Error when load data!');
+        .catch((err) => {
+          console.log(err);
         });
     },
     addBorrow() {
@@ -269,7 +270,7 @@ export default {
   },
   mounted() {
     this.getBookById();
-    this.getUserById();
+    // this.getUserById();
   },
 };
 </script>

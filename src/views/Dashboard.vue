@@ -244,8 +244,6 @@ export default {
       // console.log(this.sort);
     },
     getAllBooks() {
-      // this.url = `http://localhost:5000/api/library/book?page=${this.currentPage}`;
-      // console.log(this.url);
       axios
         .get(this.url + this.currentPage)
         // .get('http://localhost:5000/api/library/book?page=2')

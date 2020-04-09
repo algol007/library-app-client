@@ -7,7 +7,7 @@
           <img src="../assets/img/bookshelf.png" alt="Logo" height="80px" width="80px">
         </router-link>
         <div class="auth-intro">
-          <h1>Login</h1>
+          <h1 @click="activate">Login</h1>
           <h5>Welcome back, Please login</h5>
           <h5>to your account</h5>
         </div>
@@ -60,12 +60,39 @@ export default {
       email: null,
       password: null,
       userId: null,
+      query: null,
+      token: null,
     };
+  },
+  mounted() {
+    this.getToken();
+  },
+  created() {
+    const token = this.$route.query;
+    const userToken = token.token;
+    console.log(userToken);
+    this.token = userToken;
+    if (userToken) {
+      this.activate();
+    }
   },
   methods: {
     localData() {
       const parsed = JSON.stringify({ isLogin: true, id: this.userId });
+      // const parsed = JSON.stringify({ isLogin: true, id: 1 });
       localStorage.setItem('items', parsed);
+    },
+    activate() {
+      axios
+        .patch(`http://localhost:5000/api/library/user/activation?token=${this.token}`, {
+          isActive: 1,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     signIn(event) {
       event.preventDefault();
@@ -75,9 +102,10 @@ export default {
           password: this.password,
         })
         .then((res) => {
-          this.userId = res.data.id;
+          // console.log(res.data.user);
+          this.userId = res.data.user;
           this.$router.push('/');
-          // console.log(this.userId);
+          console.log(this.uerId);
           this.$swal.fire({
             icon: 'success',
             html: 'Login Success!',
@@ -93,6 +121,25 @@ export default {
             showConfirmButton: false,
             timer: 3000,
           });
+        });
+    },
+    getToken() {
+      axios
+        .get('http://localhost:5000/api/library/auth/signin', {
+          email: this.email,
+          password: this.password,
+        })
+        .then((res) => {
+          this.userId = res.data.id;
+          this.$router.push('/');
+          console.log(this.uerId);
+          this.$swal.fire({
+            icon: 'success',
+            html: 'Login Success!',
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          this.localData();
         });
     },
   },
