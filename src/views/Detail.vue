@@ -136,6 +136,7 @@ export default {
       isLogin: false,
       userId: null,
       role: null,
+      items: [],
     };
   },
   created() {
@@ -175,7 +176,8 @@ export default {
         .then((result) => {
           if (result.value) {
             axios
-              .delete(`http://localhost:5000/api/library/admin/book/${this.$route.params.id}`)
+              .delete(`http://localhost:5000/api/library/admin/book/${this.$route.params.id}`,
+                { headers: { 'baca-bismillah': this.items.token } })
               .then(() => {
                 // console.log(res);
                 this.$swal.fire({
@@ -203,7 +205,8 @@ export default {
           language: this.book.language,
           publishedBy: this.book.publishedBy,
           publishedAt: this.book.publishedAt,
-        })
+        },
+        { headers: { 'baca-bismillah': this.items.token } })
         .then(() => {
           // console.log(${this.$route.params.id});
           // console.log(res);
@@ -213,9 +216,9 @@ export default {
             showConfirmButton: false,
             timer: 3000,
           });
-          this.$router.go();
           const modal = document.querySelector('.modal');
           modal.classList.toggle('is-active');
+          this.$router.go();
         })
         .catch(() => {
           // console.log('Error when load data!');
@@ -226,7 +229,7 @@ export default {
         .then((res) => {
           this.book = res.data.data;
           this.name = this.book.bookCategory.name;
-          console.log(this.name);
+          console.log(this.book.image);
         })
         .catch((err) => {
           console.log(err);
@@ -238,6 +241,8 @@ export default {
         axios
           .post('http://localhost:5000/api/library/cart', {
             bookId: this.bookId,
+            userId: this.userId,
+            status: 0,
           })
           .then(() => {
             // console.log(res);

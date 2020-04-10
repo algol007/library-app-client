@@ -64,21 +64,18 @@ export default {
       token: null,
     };
   },
-  mounted() {
-    this.getToken();
-  },
   created() {
     const token = this.$route.query;
     const userToken = token.token;
-    console.log(userToken);
-    this.token = userToken;
+    // console.log(userToken);
     if (userToken) {
+      this.token = userToken;
       this.activate();
     }
   },
   methods: {
     localData() {
-      const parsed = JSON.stringify({ isLogin: true, id: this.userId });
+      const parsed = JSON.stringify({ isLogin: true, id: this.userId, token: this.token });
       // const parsed = JSON.stringify({ isLogin: true, id: 1 });
       localStorage.setItem('items', parsed);
     },
@@ -104,8 +101,8 @@ export default {
         .then((res) => {
           // console.log(res.data.user);
           this.userId = res.data.user;
-          this.$router.push('/');
-          console.log(this.uerId);
+          this.token = res.data.token;
+          console.log(this.token);
           this.$swal.fire({
             icon: 'success',
             html: 'Login Success!',
@@ -113,6 +110,7 @@ export default {
             timer: 3000,
           });
           this.localData();
+          this.$router.push('/');
         })
         .catch(() => {
           this.$swal.fire({
@@ -121,25 +119,6 @@ export default {
             showConfirmButton: false,
             timer: 3000,
           });
-        });
-    },
-    getToken() {
-      axios
-        .get('http://localhost:5000/api/library/auth/signin', {
-          email: this.email,
-          password: this.password,
-        })
-        .then((res) => {
-          this.userId = res.data.id;
-          this.$router.push('/');
-          console.log(this.uerId);
-          this.$swal.fire({
-            icon: 'success',
-            html: 'Login Success!',
-            showConfirmButton: false,
-            timer: 3000,
-          });
-          this.localData();
         });
     },
   },

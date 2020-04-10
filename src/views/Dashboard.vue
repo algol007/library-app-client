@@ -197,7 +197,6 @@ export default {
       sort: null,
       search: null,
       name: null,
-      // role: null,
       url: 'http://localhost:5000/api/library/book?page=',
     };
   },
@@ -210,20 +209,12 @@ export default {
   },
   methods: {
     pages(id) {
-      // const active = document.querySelector('.pagination-link');
-      // if (this.currentPage === id) {
-      //   active.classList.add('is-current');
-      // }
       this.currentPage = 0 + id;
       axios
         .get(this.url + this.currentPage)
-        // .get('http://localhost:5000/api/library/book?page=2')
         .then((res) => {
           this.totalPage = Math.ceil(res.data.books.count / this.limit);
           this.books = res.data.books.rows;
-          // console.log(res.data.books.rows);
-          // console.log(this.books.length);
-          // console.log(this.currentPage);
         })
         .catch(() => {
           // console.log('Error when load data!');
@@ -250,9 +241,6 @@ export default {
         .then((res) => {
           this.totalPage = Math.ceil(res.data.books.count / this.limit);
           this.books = res.data.books.rows;
-          // console.log(res.data.books.rows);
-          // console.log(this.books.length);
-          // console.log(this.currentPage);
         })
         .catch(() => {
           // console.log('Error when load data!');

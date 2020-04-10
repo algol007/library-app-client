@@ -28,11 +28,9 @@
       </div>
     </div>
     <div class="sidebar-menu">
-      <p>Explore</p>
+      <p><router-link to="/" class="menu-list">Explore</router-link></p>
       <p><router-link to="/history" class="menu-list">History</router-link></p>
-      <!-- <p data-toggle="modal" @click="showModal" v-if="this.role == 'admin'">Add Book*</p> -->
-      <p data-toggle="modal" @click="showModal">Add Book*</p>
-      <!-- <p class="none" v-else>Add Book*</p> -->
+      <p data-toggle="modal" @click="showModal">Add Book</p>
       <p @click="logout">Logout</p>
     </div>
     <!-- Sidebar Menu -->
@@ -174,7 +172,7 @@ export default {
           this.name = res.data.user.name;
           this.role = res.data.user.role;
           localStorage.items = JSON.stringify({
-            isLogin: true, id: res.data.user.id, role: this.role,
+            isLogin: true, id: res.data.user.id, role: this.role, token: this.items.token,
           });
           // console.log(res.data.user.role);
         })
@@ -182,7 +180,9 @@ export default {
           // console.log('Error when load data!');
         });
     },
-    async addBook() {
+    async addBook(event) {
+      event.preventDefault();
+      console.log(this.image);
       const formData = new FormData();
       formData.append('title', this.title);
       formData.append('image', this.image);
@@ -196,7 +196,8 @@ export default {
       formData.append('publishedBy', this.publishedBy);
       formData.append('publishedAt', this.publishedAt);
       axios
-        .post('http://localhost:5000/api/library/admin/book', formData)
+        .post('http://localhost:5000/api/library/admin/book', formData,
+          { headers: { 'baca-bismillah': this.items.token } })
         .then(() => {
           // console.log(res);
           this.$router.go();

@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       email: null,
-      books: [],
+      carts: [],
     };
   },
   methods: {
@@ -40,11 +40,11 @@ export default {
       const modal = document.querySelector('.modal');
       modal.classList.toggle('is-active');
     },
-    getAllBooks() {
-      axios.get('http://localhost:5000/api/library/book')
+    getAllCart() {
+      axios.get(`http://localhost:5000/api/library/user/cart${this.$route.params.id}`)
         .then((res) => {
-          this.books = res.data.books.rows;
-          // console.log(res.data.books.rows);
+          // this.carts = res.data.books.rows;
+          console.log(res);
         })
         .catch(() => {
           // console.log('Error when load data!');
@@ -52,7 +52,7 @@ export default {
     },
   },
   mounted() {
-    this.getAllBooks();
+    this.getAllCart();
   },
 };
 </script>
