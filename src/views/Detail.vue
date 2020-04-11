@@ -69,7 +69,8 @@
         </div>
         <div class="form-login">
           <label for="totalPage">Total Page</label>
-          <input name="totalPage" id="totalPage" v-model="book.totalPage" required/>
+          <input type="number" name="totalPage" id="totalPage" v-model="book.totalPage"
+          required/>
         </div>
         <div class="form-login">
           <label for="categoryId">Category</label>
@@ -90,7 +91,7 @@
         </div>
         <div class="form-login">
           <label for="price">Price</label>
-          <input name="price" id="price" v-model="book.price" required/>
+          <input type="number" name="price" id="price" v-model="book.price" required/>
         </div>
         <div class="form-login">
           <label for="language">Language</label>
@@ -132,6 +133,8 @@ export default {
       isLogin: false,
       items: [],
       name: null,
+      url: process.env.VUE_APP_BASE_URL,
+      page: null,
     };
   },
   created() {
@@ -155,8 +158,9 @@ export default {
       })
         .then((result) => {
           if (result.value) {
+            this.page = 'admin/book/';
             axios
-              .delete(`http://localhost:5000/api/library/admin/book/${this.$route.params.id}`,
+              .delete(this.url + this.page + this.$route.params.id,
                 { headers: { 'baca-bismillah': this.items.token } })
               .then(() => {
                 // console.log(res);
@@ -172,8 +176,9 @@ export default {
         });
     },
     updateBook() {
+      this.page = 'admin/book/';
       axios
-        .put(`http://localhost:5000/api/library/admin/book/${this.$route.params.id}`, {
+        .put(this.url + this.page + this.$route.params.id, {
           title: this.book.title,
           image: this.book.image,
           author: this.book.author,
@@ -205,21 +210,23 @@ export default {
         });
     },
     getBookById() {
-      axios.get(`http://localhost:5000/api/library/book/${this.$route.params.id}`)
+      this.page = 'book/';
+      axios.get(this.url + this.page + this.$route.params.id)
         .then((res) => {
           this.book = res.data.data;
           this.name = this.book.bookCategory.name;
           // console.log(this.book.image);
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+          // console.log(err);
         });
     },
     addBorrow() {
       if (this.items.isLogin === true) {
         this.bookId = this.$route.params.id;
+        this.page = 'cart';
         axios
-          .post('http://localhost:5000/api/library/cart', {
+          .post(this.url + this.page, {
             bookId: this.bookId,
             userId: this.userId,
             status: 0,

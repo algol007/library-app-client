@@ -30,7 +30,7 @@
     <div class="sidebar-menu">
       <p><router-link to="/" class="menu-list">Explore</router-link></p>
       <p><router-link to="/history" class="menu-list">History</router-link></p>
-      <p data-toggle="modal" @click="showModal">Add Book</p>
+      <p data-toggle="modal" @click="showModal" v-if="this.role == 'admin'">Add Book</p>
       <p @click="logout">Logout</p>
     </div>
     <!-- Sidebar Menu -->
@@ -41,7 +41,7 @@
           <p class="modal-card-title">Add Book</p>
           <button class="delete" aria-label="close" @click="showModal"></button>
         </header>
-        <form  @submit="addBook" class="modal-card-body">
+        <form @submit="addBook" class="modal-card-body">
           <div class="form-login">
             <label for="title">Title</label>
             <input name="Title" id="title" placeholder="Title" v-model="title" required/>
@@ -61,7 +61,8 @@
           </div>
           <div class="form-login">
             <label for="totalPage">Total Page</label>
-            <input name="totalPage" id="totalPage" placeholder="Total Page" v-model="totalPage"
+            <input type="number" name="totalPage" id="totalPage" placeholder="Total Page"
+            v-model="totalPage"
             required/>
           </div>
           <div class="form-login">
@@ -83,7 +84,8 @@
           </div>
           <div class="form-login">
             <label for="price">Price</label>
-            <input name="price" id="price" placeholder="Price" v-model="price" required/>
+            <input type="number" name="price" id="price" placeholder="Price" v-model="price"
+            required/>
           </div>
           <div class="form-login">
             <label for="language">Language</label>
@@ -142,6 +144,7 @@ export default {
       name: null,
       role: null,
       items: [],
+      url: process.env.VUE_APP_BASE_URL,
     };
   },
   created() {
@@ -166,10 +169,11 @@ export default {
       // console.log('Sidebar');
     },
     getUserById() {
+      const user = 'user/';
       axios
-        .get(`http://localhost:5000/api/library/user/${this.items.id}`)
+        .get(this.url + user + this.items.id)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           this.name = res.data.user.name;
           this.role = res.data.user.role;
           localStorage.items = JSON.stringify({
@@ -183,7 +187,6 @@ export default {
     },
     async addBook(event) {
       event.preventDefault();
-      console.log(this.image);
       const formData = new FormData();
       formData.append('title', this.title);
       formData.append('image', this.image);
@@ -196,8 +199,9 @@ export default {
       formData.append('language', this.language);
       formData.append('publishedBy', this.publishedBy);
       formData.append('publishedAt', this.publishedAt);
+      const addBook = 'admin/book';
       axios
-        .post('http://localhost:5000/api/library/admin/book', formData,
+        .post(this.url + addBook, formData,
           { headers: { 'baca-bismillah': this.items.token } })
         .then(() => {
           // console.log(res);
@@ -213,8 +217,8 @@ export default {
           modal.classList.toggle('is-active');
           sidebar.classList.toggle('show-sidebar');
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+          // console.log(err);
         });
     },
     showModal() {

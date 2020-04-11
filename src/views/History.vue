@@ -72,7 +72,8 @@ export default {
       name: null,
       date: null,
       items: [],
-      // bookId: null,
+      url: process.env.VUE_APP_BASE_URL,
+      page: null,
     };
   },
   created() {
@@ -81,8 +82,9 @@ export default {
   },
   methods: {
     getUserById() {
+      this.page = 'user/';
       axios
-        .get(`http://localhost:5000/api/library/user/${this.items.id}`)
+        .get(this.url + this.page + this.items.id)
         .then((res) => {
           this.name = res.data.user.name;
           // console.log(this.role);
@@ -92,31 +94,34 @@ export default {
         });
     },
     getAllUserCart() {
+      this.page = 'cart';
       axios
-        .get('http://localhost:5000/api/library/cart')
+        .get(this.url + this.page)
         .then((res) => {
           this.carts = res.data.carts;
           this.length = this.carts.length;
-          console.log(this.length);
+          // console.log(this.length);
         })
         .catch(() => {
           // console.log('Error when load data!');
         });
     },
     getAllCart() {
+      this.page = 'user/cart/';
       axios
-        .get(`http://localhost:5000/api/library/user/cart/${this.items.id}`)
+        .get(this.url + this.page + this.items.id)
         .then((res) => {
           this.carts = res.data.carts;
-          console.log(this.carts);
+          // console.log(this.carts);
         })
         .catch(() => {
           // console.log('Error when load data!');
         });
     },
     cartReset(id) {
+      this.page = 'cart/';
       axios
-        .patch(`http://localhost:5000/api/library/cart/${id}`, {
+        .patch(this.url + this.page + id, {
           status: 0,
         },
         { headers: { 'baca-bismillah': this.items.token } })
@@ -128,8 +133,9 @@ export default {
         });
     },
     cartApproved(id) {
+      this.page = 'cart/';
       axios
-        .patch(`http://localhost:5000/api/library/cart/${id}`, {
+        .patch(this.url + this.page + id, {
           status: 1,
         },
         { headers: { 'baca-bismillah': this.items.token } })
@@ -141,8 +147,9 @@ export default {
         });
     },
     cartReturned(id) {
+      this.page = 'cart/';
       axios
-        .patch(`http://localhost:5000/api/library/cart/${id}`, {
+        .patch(this.url + this.page + id, {
           status: 2,
         },
         { headers: { 'baca-bismillah': this.items.token } })
@@ -169,8 +176,9 @@ export default {
       })
         .then((result) => {
           if (result.value) {
+            this.page = 'cart/';
             axios
-              .delete(`http://localhost:5000/api/library/cart/${id}`,
+              .delete(this.url + this.page + id,
                 { headers: { 'baca-bismillah': this.items.token } })
               .then(() => {
                 // console.log(res);
@@ -187,7 +195,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.role);
+    // console.log(this.role);
     if (this.role === 'user') {
       this.getAllCart();
     } else {

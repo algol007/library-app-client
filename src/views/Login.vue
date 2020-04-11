@@ -62,6 +62,8 @@ export default {
       userId: null,
       query: null,
       token: null,
+      url: process.env.VUE_APP_BASE_URL,
+      page: null,
     };
   },
   created() {
@@ -80,21 +82,23 @@ export default {
       localStorage.setItem('items', parsed);
     },
     activate() {
+      this.page = 'user/activation?token=';
       axios
-        .patch(`http://localhost:5000/api/library/user/activation?token=${this.token}`, {
+        .patch(this.url + this.page + this.token, {
           isActive: 1,
         })
-        .then((res) => {
-          console.log(res);
+        .then(() => {
+          // console.log(res);
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+          // console.log(err);
         });
     },
     signIn(event) {
       event.preventDefault();
+      this.page = 'auth/signin';
       axios
-        .post('http://localhost:5000/api/library/auth/signin', {
+        .post(this.url + this.page, {
           email: this.email,
           password: this.password,
         })
