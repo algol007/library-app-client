@@ -6,7 +6,7 @@
         <div class="nav-back">
           <router-link to="/"><div class="back"></div></router-link>
         </div>
-        <div class="nav-option" v-if="this.role == 'admin'">
+        <div class="nav-option" v-if="this.items.role == 'admin'">
           <button @click="showModal">Edit</button>
           <button @click="deleteBook">Delete</button>
         </div>
@@ -50,30 +50,30 @@
         <p class="modal-card-title">Edit Book</p>
         <button class="delete" aria-label="close" @click="showModal"></button>
       </header>
-      <section class="modal-card-body">
+      <form @submit="updateBook" class="modal-card-body">
         <div class="form-login">
           <label for="title">Title</label>
-          <input name="Title" id="title" v-model="book.title"/>
+          <input name="Title" id="title" v-model="book.title" required/>
         </div>
         <div class="form-login">
           <label for="image">Image</label>
-          <input name="image" id="image" v-model="book.image"/>
+          <input name="image" id="image" v-model="book.image" required/>
         </div>
         <div class="form-login">
           <label for="author">Author</label>
-          <input name="author" id="author" v-model="book.author"/>
+          <input name="author" id="author" v-model="book.author" required/>
         </div>
         <div class="form-login">
           <label for="isbn">ISBN</label>
-          <input name="isbn" id="isbn" v-model="book.isbn"/>
+          <input name="isbn" id="isbn" v-model="book.isbn" required/>
         </div>
         <div class="form-login">
           <label for="totalPage">Total Page</label>
-          <input name="totalPage" id="totalPage" v-model="book.totalPage"/>
+          <input name="totalPage" id="totalPage" v-model="book.totalPage" required/>
         </div>
         <div class="form-login">
           <label for="categoryId">Category</label>
-            <select name="categoryId" id="categoryId" v-model="book.categoryId">
+            <select name="categoryId" id="categoryId" v-model="book.categoryId" required>
               <option value="1">Novel</option>
               <option value="2">Komik</option>
               <option value="3">Sastra</option>
@@ -90,29 +90,29 @@
         </div>
         <div class="form-login">
           <label for="price">Price</label>
-          <input name="price" id="price" v-model="book.price"/>
+          <input name="price" id="price" v-model="book.price" required/>
         </div>
         <div class="form-login">
           <label for="language">Language</label>
-          <input name="language" id="language" v-model="book.language"/>
+          <input name="language" id="language" v-model="book.language" required/>
         </div>
         <div class="form-login">
           <label for="publishedBy">Publisher</label>
-          <input name="publishedBy" id="publishedBy" v-model="book.publishedBy"/>
+          <input name="publishedBy" id="publishedBy" v-model="book.publishedBy" required/>
         </div>
         <div class="form-login">
           <label for="publishedAt">Published On</label>
-          <input name="publishedAt" id="publishedAt" v-model="book.publishedAt"/>
+          <input name="publishedAt" id="publishedAt" v-model="book.publishedAt" required/>
         </div>
         <div class="form-login">
           <label for="description">Description</label>
           <textarea name="description" id="description" v-model="book.description"
-          rows="5"/>
+          rows="5" required/>
         </div>
-      </section>
-      <footer class="modal-card-foot">
-        <button class="button is-warning button-save" @click="updateBook">Save</button>
-      </footer>
+        <footer class="button-save">
+          <button class="button is-warning">Save</button>
+        </footer>
+      </form>
     </div>
   </div>
 
@@ -125,44 +125,24 @@ import axios from 'axios';
 
 export default {
   name: 'Detail',
-  components: {
-    // DetailBook,
-  },
   data() {
     return {
       book: [],
-      name: null,
       bookId: null,
       isLogin: false,
-      userId: null,
-      role: null,
       items: [],
+      name: null,
     };
   },
   created() {
     this.items = JSON.parse(localStorage.getItem('items'));
-    console.log(this.items);
-    this.role = this.items.role;
-    this.userId = this.items.id;
-    this.isLogin = this.items.isLogin;
+    // console.log(this.items);
   },
   methods: {
     showModal() {
       const modal = document.querySelector('.modal');
       modal.classList.toggle('is-active');
       // console.log(this.book.bookCategory);
-    },
-    getUserById() {
-      axios
-        .get(`http://localhost:5000/api/library/user/${this.userId}`)
-        .then((res) => {
-          // console.log(res);
-          this.role = res.data.user.role;
-          // console.log(this.role);
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
     },
     deleteBook() {
       this.$swal.fire({
@@ -229,21 +209,22 @@ export default {
         .then((res) => {
           this.book = res.data.data;
           this.name = this.book.bookCategory.name;
-          console.log(this.book.image);
+          // console.log(this.book.image);
         })
         .catch((err) => {
           console.log(err);
         });
     },
     addBorrow() {
-      if (this.isLogin === true) {
+      if (this.items.isLogin === true) {
         this.bookId = this.$route.params.id;
         axios
           .post('http://localhost:5000/api/library/cart', {
             bookId: this.bookId,
             userId: this.userId,
             status: 0,
-          })
+          },
+          { headers: { 'baca-bismillah': this.items.token } })
           .then(() => {
             // console.log(res);
             this.$swal.fire({
@@ -268,14 +249,16 @@ export default {
   },
   computed: {
     img() {
+      // const original = this.book.image;
+      // const image = original.replace(/ /g, '%');
       return {
         backgroundImage: `url(${this.book.image})`,
+        // backgroundImage: `url(${image})`,
       };
     },
   },
   mounted() {
     this.getBookById();
-    // this.getUserById();
   },
 };
 </script>

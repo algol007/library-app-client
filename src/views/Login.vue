@@ -102,7 +102,7 @@ export default {
           // console.log(res.data.user);
           this.userId = res.data.user;
           this.token = res.data.token;
-          console.log(this.token);
+          // console.log(this.token);
           this.$swal.fire({
             icon: 'success',
             html: 'Login Success!',
