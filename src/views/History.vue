@@ -68,26 +68,22 @@ export default {
       key: null,
       length: null,
       numbers: null,
-      userId: null,
       role: null,
       name: null,
       date: null,
+      items: [],
       // bookId: null,
     };
   },
   created() {
     this.items = JSON.parse(localStorage.getItem('items'));
-    // console.log(this.items);
-    this.userId = this.items.id;
     this.role = this.items.role;
   },
   methods: {
     getUserById() {
       axios
-        .get(`http://localhost:5000/api/library/user/${this.userId}`)
+        .get(`http://localhost:5000/api/library/user/${this.items.id}`)
         .then((res) => {
-          // console.log(res);
-          this.role = res.data.user.role;
           this.name = res.data.user.name;
           // console.log(this.role);
         })
@@ -109,7 +105,7 @@ export default {
     },
     getAllCart() {
       axios
-        .get(`http://localhost:5000/api/library/user/cart/${this.userId}`)
+        .get(`http://localhost:5000/api/library/user/cart/${this.items.id}`)
         .then((res) => {
           this.carts = res.data.carts;
           console.log(this.carts);
@@ -122,7 +118,8 @@ export default {
       axios
         .patch(`http://localhost:5000/api/library/cart/${id}`, {
           status: 0,
-        })
+        },
+        { headers: { 'baca-bismillah': this.items.token } })
         .then(() => {
           this.$router.go();
         })
@@ -134,7 +131,8 @@ export default {
       axios
         .patch(`http://localhost:5000/api/library/cart/${id}`, {
           status: 1,
-        })
+        },
+        { headers: { 'baca-bismillah': this.items.token } })
         .then(() => {
           this.$router.go();
         })
@@ -146,7 +144,8 @@ export default {
       axios
         .patch(`http://localhost:5000/api/library/cart/${id}`, {
           status: 2,
-        })
+        },
+        { headers: { 'baca-bismillah': this.items.token } })
         .then(() => {
           this.$router.go();
         })
@@ -171,7 +170,8 @@ export default {
         .then((result) => {
           if (result.value) {
             axios
-              .delete(`http://localhost:5000/api/library/cart/${id}`)
+              .delete(`http://localhost:5000/api/library/cart/${id}`,
+                { headers: { 'baca-bismillah': this.items.token } })
               .then(() => {
                 // console.log(res);
                 this.$swal.fire({

@@ -92,9 +92,9 @@ export default {
             // console.log(res);
             this.$swal.fire({
               icon: 'success',
-              html: 'User has been created! Please login.',
-              showConfirmButton: false,
-              timer: 3000,
+              title: 'Your account has been created.',
+              text: 'Please check your email to activate!',
+              footer: "<a href='https://gmail.com/'>Check my email..</a>",
             });
           })
           .catch(() => {

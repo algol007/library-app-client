@@ -152,16 +152,17 @@
           </router-link>
         </div>
       </div>
-      <ul class="pagination is-centered" role="navigation" aria-label="pagination">
-        <li><button class="pagination-previous" @click="prevPages">Previous</button></li>
-          <li class="pagination-gap" v-for="page in this.totalPage" :key="page.id"
-          @click="pages(page)">
-            <div class="pagination-link is-current">{{ page }}</div>
-          </li>
-        <li><button class="pagination-next" @click="nextPages">Next page</button></li>
-        <!-- <ul class="pagination-list" v-for="page in this.totalPage" :key="page.id"> -->
-        <!-- </ul> -->
-      </ul>
+      <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+        <ul class="pagination-list">
+          <li><a class="pagination-previous" @click="prevPages">First Page</a></li>
+            <li class="pagination-gap" v-for="page in this.totalPage" :key="page.id"
+            @click="pages(page)">
+              <div class="pagination-link is-current" v-if="page == currentPage">{{ page }}</div>
+              <div class="pagination-link" v-else>{{ page }}</div>
+            </li>
+          <li><a class="pagination-next" @click="nextPages">Next page</a></li>
+        </ul>
+      </nav>
     </div>
   </div>
 </template>
@@ -235,6 +236,8 @@ export default {
       // console.log(this.sort);
     },
     getAllBooks() {
+      // this.nextPages();
+      // this.prevPages();
       axios
         .get(this.url + this.currentPage)
         // .get('http://localhost:5000/api/library/book?page=2')
@@ -283,6 +286,7 @@ export default {
         });
     },
     getBooksByYear2() {
+      this.sort = '&year=DESC';
       axios
         .get(this.url + this.currentPage + this.sort)
         .then((res) => {

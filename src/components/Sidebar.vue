@@ -41,7 +41,7 @@
           <p class="modal-card-title">Add Book</p>
           <button class="delete" aria-label="close" @click="showModal"></button>
         </header>
-        <form class="modal-card-body">
+        <form  @submit="addBook" class="modal-card-body">
           <div class="form-login">
             <label for="title">Title</label>
             <input name="Title" id="title" placeholder="Title" v-model="title" required/>
@@ -106,10 +106,11 @@
             v-model="description"
             rows="5" required/>
           </div>
+          <footer class="button-save">
+            <button class="button is-warning" type="submit">
+              Save</button>
+          </footer>
         </form>
-        <footer class="modal-card-foot">
-          <button class="button is-warning button-save" type="submit" @click="addBook">Save</button>
-        </footer>
       </div>
     </div>
 
@@ -310,6 +311,11 @@ export default {
     margin-left: 10px;
     border: none;
     outline: none;
+  }
+  .button-save{
+    padding: 20px 0;
+    display: flex;
+    flex-direction: row-reverse;
   }
   @media (max-width: 450px) {
     .search-box {
