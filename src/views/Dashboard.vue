@@ -154,7 +154,7 @@
       </div>
       <nav class="pagination is-centered" role="navigation" aria-label="pagination">
         <ul class="pagination-list">
-          <li><a class="pagination-previous" @click="prevPages">First Page</a></li>
+          <li><a class="pagination-previous" @click="prevPages">Previous</a></li>
             <li class="pagination-gap" v-for="page in this.totalPage" :key="page.id"
             @click="pages(page)">
               <div class="pagination-link is-current" v-if="page == currentPage">{{ page }}</div>
@@ -198,7 +198,8 @@ export default {
       sort: null,
       search: null,
       name: null,
-      url: 'http://localhost:5000/api/library/book?page=',
+      url: process.env.VUE_APP_BASE_URL,
+      page: 'book?page=',
     };
   },
   created() {
@@ -212,7 +213,7 @@ export default {
     pages(id) {
       this.currentPage = 0 + id;
       axios
-        .get(this.url + this.currentPage)
+        .get(this.url + this.page + this.currentPage)
         .then((res) => {
           this.totalPage = Math.ceil(res.data.books.count / this.limit);
           this.books = res.data.books.rows;
@@ -239,7 +240,7 @@ export default {
       // this.nextPages();
       // this.prevPages();
       axios
-        .get(this.url + this.currentPage)
+        .get(this.url + this.page + this.currentPage)
         // .get('http://localhost:5000/api/library/book?page=2')
         .then((res) => {
           this.totalPage = Math.ceil(res.data.books.count / this.limit);
@@ -252,7 +253,7 @@ export default {
     getBooksByTitle() {
       this.sort = '&title=ASC';
       axios
-        .get(this.url + this.currentPage + this.sort)
+        .get(this.url + this.page + this.currentPage + this.sort)
         .then((res) => {
           this.books = res.data.books.rows;
           // console.log(res.data.books.rows);
@@ -264,7 +265,7 @@ export default {
     getBooksByAuthor() {
       this.sort = '&author=ASC';
       axios
-        .get(this.url + this.currentPage + this.sort)
+        .get(this.url + this.page + this.currentPage + this.sort)
         .then((res) => {
           this.books = res.data.books.rows;
           // console.log(res.data.books.rows);
@@ -276,7 +277,7 @@ export default {
     getBooksByYear() {
       this.sort = '&year=ASC';
       axios
-        .get(this.url + this.currentPage + this.sort)
+        .get(this.url + this.page + this.currentPage + this.sort)
         .then((res) => {
           this.books = res.data.books.rows;
           // console.log(res.data.books.rows);
@@ -288,7 +289,7 @@ export default {
     getBooksByYear2() {
       this.sort = '&year=DESC';
       axios
-        .get(this.url + this.currentPage + this.sort)
+        .get(this.url + this.page + this.currentPage + this.sort)
         .then((res) => {
           this.books = res.data.books.rows;
           // console.log(res.data.books.rows);
@@ -298,8 +299,9 @@ export default {
         });
     },
     searchBooks() {
+      this.sort = `book/?search=${this.search}`;
       axios
-        .get(`http://localhost:5000/api/library/book?search=${this.search}`)
+        .get(this.url + this.sort)
         .then((res) => {
           this.books = res.data.books.rows;
           // console.log(res.data.books.rows);

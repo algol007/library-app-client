@@ -4,9 +4,7 @@ import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Detail from '../views/Detail.vue';
-import Cart from '../views/Cart.vue';
 import History from '../views/History.vue';
-import About from '../views/About.vue';
 
 Vue.use(VueRouter);
 
@@ -32,19 +30,9 @@ const routes = [
     component: Detail,
   },
   {
-    path: '/cart',
-    name: 'Cart',
-    component: Cart,
-  },
-  {
     path: '/history',
     name: 'History',
     component: History,
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: About,
   },
 ];
 

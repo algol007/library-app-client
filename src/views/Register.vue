@@ -26,11 +26,15 @@
             <input type="password" name="password" id="password" placeholder="Password"
             v-model="password" required>
           </div>
+          <!-- <span class="error-message" v-if="this.message.length">{{ this.message }}</span> -->
+          <span class="error-message" v-if="this.message1.length">{{ this.message1 }}</span>
+          <!-- <span class="error-message" v-else></span> -->
           <div class="form-group">
             <label for="password2">Repeat Password</label>
             <input type="password" name="password2" id="password2" placeholder="Repeat Password"
             v-model="password2" required>
           </div>
+          <span class="error-message" v-if="this.message2.length">{{ this.message2 }}</span>
           <div class="button-group">
             <button type="submit" class="button is-black">Signup</button>
             <router-link to='/auth/login' class="button is-white">Login</router-link>
@@ -67,9 +71,39 @@ export default {
       email: null,
       password: null,
       password2: null,
+      message1: [],
+      message2: [],
+      url: process.env.VUE_APP_BASE_URL,
+      page: null,
     };
   },
+  watch: {
+    password(value) {
+      this.password = value;
+      // console.log(value);
+      this.checkPassword(value);
+    },
+    password2(value) {
+      this.password2 = value;
+      // console.log(value);
+      this.checkPassword2(value);
+    },
+  },
   methods: {
+    checkPassword(value) {
+      if (value.length < 4) {
+        this.message1 = 'Password must contains 4 characters';
+      } else {
+        this.message1 = '';
+      }
+    },
+    checkPassword2(value) {
+      if (value.length < 4) {
+        this.message2 = 'Password must contains 4 characters';
+      } else {
+        this.message2 = '';
+      }
+    },
     signUp(event) {
       event.preventDefault();
       if (this.password !== this.password2) {
@@ -81,8 +115,9 @@ export default {
           timer: 3000,
         });
       } else {
+        this.page = 'auth/signup';
         axios
-          .post('http://localhost:5000/api/library/auth/signup', {
+          .post(this.url + this.page, {
             name: this.name,
             email: this.email,
             password: this.password,
@@ -165,6 +200,11 @@ export default {
     color: #d0cccc;
     font-size: 14px;
     display: block;
+  }
+  .error-message{
+    color: rgb(250, 0, 0);
+    font-size: 14px;
+    padding-left: 10px;
   }
   @media (max-width: 992px) {
     .auth-form {
