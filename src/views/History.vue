@@ -195,7 +195,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.role);
+    // console.log(this.role);
     if (this.role === 'user') {
       this.getAllCart();
     } else {
