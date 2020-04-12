@@ -138,8 +138,11 @@ export default {
     };
   },
   created() {
-    this.items = JSON.parse(localStorage.getItem('items'));
-    // console.log(this.items);
+    this.items = { role: 'user' };
+    const local = JSON.parse(localStorage.getItem('items'));
+    if (local) {
+      this.items = local;
+    }
   },
   methods: {
     showModal() {
