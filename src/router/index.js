@@ -5,6 +5,7 @@ import Register from '../views/Register.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Detail from '../views/Detail.vue';
 import History from '../views/History.vue';
+import Profile from '../views/Profile.vue';
 
 Vue.use(VueRouter);
 
@@ -33,6 +34,11 @@ const routes = [
     path: '/history',
     name: 'History',
     component: History,
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
   },
 ];
 

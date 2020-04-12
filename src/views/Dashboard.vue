@@ -304,7 +304,7 @@ export default {
         .get(this.url + this.sort)
         .then((res) => {
           this.books = res.data.books.rows;
-          // console.log(res.data.books.rows);
+          // console.log(res);
           const slider = document.querySelector('.slider');
           const book = document.querySelector('.book');
           if (this.search) {

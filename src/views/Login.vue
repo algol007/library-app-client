@@ -119,7 +119,7 @@ export default {
         .catch(() => {
           this.$swal.fire({
             icon: 'error',
-            html: 'Wrong Email or Password!',
+            html: 'Wrong Password!',
             showConfirmButton: false,
             timer: 3000,
           });
