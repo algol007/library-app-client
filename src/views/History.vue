@@ -25,7 +25,9 @@
         <tbody v-for="cart in carts" :key="cart.id">
           <tr>
             <td><img :src="cart.bookCart.image" alt="book" width="80" height="100"></td>
-            <td>{{ cart.bookCart.title }}</td>
+            <td>{{ cart.bookCart.title }}
+              <p class="username">{{ cart.userCart.name }}</p>
+            </td>
             <td>{{ cart.createdAt }}</td>
             <td v-if="cart.status == 0">Pending</td>
             <td v-if="cart.status == 1">Borrow</td>
@@ -74,6 +76,7 @@ export default {
       items: [],
       url: process.env.VUE_APP_BASE_URL,
       page: null,
+      bookId: null,
     };
   },
   created() {
@@ -93,6 +96,17 @@ export default {
           // console.log('Error when load data!');
         });
     },
+    getUserBook() {
+      // this.page = 'user/';
+      // axios
+      //   .get(this.url + this.page + this.carts.bookId)
+      //   .then((res) => {
+      //     console.log(res);
+      //   })
+      //   .catch(() => {
+      //     // console.log('Error when load data!');
+      //   });
+    },
     getAllUserCart() {
       this.page = 'cart';
       axios
@@ -100,7 +114,7 @@ export default {
         .then((res) => {
           this.carts = res.data.carts;
           this.length = this.carts.length;
-          // console.log(this.length);
+          console.log(this.carts);
         })
         .catch(() => {
           // console.log('Error when load data!');
@@ -202,6 +216,7 @@ export default {
       this.getAllUserCart();
     }
     this.getUserById();
+    this.getUserBook();
   },
 };
 </script>
@@ -219,5 +234,9 @@ export default {
   }
   .lists{
     margin-top: 50px;
+  }
+  .username{
+    font-size: 12px;
+    color: #696969;
   }
 </style>

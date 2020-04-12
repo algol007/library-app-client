@@ -9,15 +9,13 @@
     <!-- Toggle Button -->
     <!-- User Profile -->
     <div class="profile">
-      <img
-        src="../assets/img/default-user.jpg"
-        alt="Cewe Cantik"
-      />
+      <div class="profile-img" :style="img">
+      </div>
       <h4>{{ name }}</h4>
     </div>
     <!-- User Profile -->
     <!-- Sidebar Menu -->
-    <div class="column search">
+    <!-- <div class="column search">
       <div class="search-box">
         <i class="fas fa-search"></i>
         <input
@@ -26,9 +24,9 @@
           placeholder="Search..."
           aria-label="Search"/>
       </div>
-    </div>
+    </div> -->
     <div class="sidebar-menu">
-      <p><router-link to="/" class="menu-list">Explore</router-link></p>
+      <p><router-link to="/profile" class="menu-list">My Profile</router-link></p>
       <p><router-link to="/history" class="menu-list">History</router-link></p>
       <p data-toggle="modal" @click="showModal" v-if="this.role == 'admin'">Add Book</p>
       <p @click="logout">Logout</p>
@@ -147,6 +145,13 @@ export default {
       url: process.env.VUE_APP_BASE_URL,
     };
   },
+  computed: {
+    img() {
+      return {
+        backgroundImage: `url(${this.image})`,
+      };
+    },
+  },
   created() {
     this.items = JSON.parse(localStorage.getItem('items'));
     // console.log(this.items.id);
@@ -176,6 +181,7 @@ export default {
           // console.log(res);
           this.name = res.data.user.name;
           this.role = res.data.user.role;
+          this.image = res.data.user.image;
           localStorage.items = JSON.stringify({
             isLogin: true, id: res.data.user.id, role: this.role, token: this.items.token,
           });
@@ -258,6 +264,14 @@ export default {
     box-shadow: 3px 2px 20px #999999;
     transition: 1s;
   }
+  .profile-img{
+    margin: 0 auto;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    background-position: center center;
+  }
   .sidebar .menu-button {
     text-align: right;
     position: absolute;
@@ -270,15 +284,11 @@ export default {
   .sidebar .profile {
     margin: 10px 0;
   }
-  .profile img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-  }
   .profile h4 {
     font-size: 20px;
     font-weight: bold;
     margin-top: 1em;
+    margin-bottom: 2em;
   }
   .sidebar .sidebar-menu {
     text-align: left;

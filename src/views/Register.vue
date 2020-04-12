@@ -92,14 +92,14 @@ export default {
   methods: {
     checkPassword(value) {
       if (value.length < 4) {
-        this.message1 = 'Password must contains 4 characters';
+        this.message1 = 'Password must contains at least 4 characters';
       } else {
         this.message1 = '';
       }
     },
     checkPassword2(value) {
       if (value.length < 4) {
-        this.message2 = 'Password must contains 4 characters';
+        this.message2 = 'Password must contains at least 4 characters';
       } else {
         this.message2 = '';
       }
