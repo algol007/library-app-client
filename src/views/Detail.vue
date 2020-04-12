@@ -231,7 +231,7 @@ export default {
         axios
           .post(this.url + this.page, {
             bookId: this.bookId,
-            userId: this.userId,
+            userId: this.items.id,
             status: 0,
           },
           { headers: { 'baca-bismillah': this.items.token } })

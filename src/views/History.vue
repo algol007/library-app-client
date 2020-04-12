@@ -11,8 +11,8 @@
     </div>
   </header>
   <div class="card-content">
-    <div class="content">
-      <table class="table is-hoverable">
+    <div class="table-container content">
+      <table class="table is-hoverable is-striped">
         <thead>
           <tr>
             <th>#</th>
@@ -66,7 +66,7 @@ export default {
     return {
       carts: null,
       key: null,
-      length: null,
+      length: 0,
       numbers: null,
       role: null,
       name: null,
@@ -112,7 +112,7 @@ export default {
         .get(this.url + this.page + this.items.id)
         .then((res) => {
           this.carts = res.data.carts;
-          // console.log(this.carts);
+          this.length = this.carts.length;
         })
         .catch(() => {
           // console.log('Error when load data!');
@@ -195,7 +195,7 @@ export default {
     },
   },
   mounted() {
-    // console.log(this.role);
+    console.log(this.role);
     if (this.role === 'user') {
       this.getAllCart();
     } else {
