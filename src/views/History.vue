@@ -32,6 +32,7 @@
             <td v-if="cart.status == 0">Pending</td>
             <td v-if="cart.status == 1">Borrow</td>
             <td v-if="cart.status == 2">Return</td>
+            <td v-if="cart.status == 3" class="text-danger">Penalty</td>
             <td v-if="role=='admin'" class="buttons are-small">
               <button class="button is-info" @click="cartApproved(cart.id)">
                 Approved</button>
@@ -39,6 +40,8 @@
                 Returned</button>
               <button class="button is-warning" @click="cartReset(cart.id)">
                 Reset</button>
+              <button class="button is-dark" @click="cartPenalty(cart.id)">
+                Penalty</button>
               <button class="button is-danger" @click="deleteCart(cart.id)">
                 Delete</button>
             </td>
@@ -174,6 +177,20 @@ export default {
           // console.log('Error when load data!');
         });
     },
+    cartPenalty(id) {
+      this.page = 'cart/';
+      axios
+        .patch(this.url + this.page + id, {
+          status: 3,
+        },
+        { headers: { 'baca-bismillah': this.items.token } })
+        .then(() => {
+          this.$router.go();
+        })
+        .catch(() => {
+          // console.log('Error when load data!');
+        });
+    },
     seeDetail(id) {
       // console.log(id);
       this.$router.push(`/book/detail/${id}`);
@@ -238,5 +255,8 @@ export default {
   .username{
     font-size: 12px;
     color: #696969;
+  }
+  .text-danger{
+    color: red;
   }
 </style>
