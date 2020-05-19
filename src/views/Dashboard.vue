@@ -1,165 +1,21 @@
 <template>
   <div class="dashboard">
-    <!-- <Navbar v-if="isLogin" /> -->
-    <!-- <HomeNav v-if="!isLogin"/> -->
-    <nav class="columns is-gapless custom-navbar" v-if="!isLogin">
-      <div class="column navbar-brand">
-        <router-link to="/">
-        <img src="../assets/img/bookshelf.png" alt="logo" height="40px" width="40px">
-        </router-link>
-        <router-link to="/" class="back-home">Library</router-link>
-      </div>
-      <div class="column sort-book">
-        <div class="dropdown satu">
-          <div class="dropdown-trigger">
-            <a class="button" aria-haspopup="true" aria-controls="dropdown-menu"
-            @click="active1">
-              <span>Sort Book</span>
-              <span class="icon is-small">
-                <i class="fas fa-angle-down" aria-hidden="true"></i>
-              </span>
-            </a>
-          </div>
-          <div class="dropdown-menu" id="dropdown-menu" role="menu">
-            <div class="dropdown-content">
-              <div class="dropdown-item" @click="getBooksByTitle">
-                By Title
-              </div>
-              <hr class="dropdown-divider">
-              <div class="dropdown-item" @click="getBooksByAuthor">
-                By Author
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="dropdown dua">
-          <div class="dropdown-trigger">
-            <a class="button" aria-haspopup="true" aria-controls="dropdown-menu"
-            @click="active2">
-              <span>All Time</span>
-              <span class="icon is-small">
-                <i class="fas fa-angle-down" aria-hidden="true"></i>
-              </span>
-            </a>
-          </div>
-          <div class="dropdown-menu" id="dropdown-menu" role="menu">
-            <div class="dropdown-content">
-              <div class="dropdown-item" @click="getBooksByYear2">
-                Newest
-              </div>
-              <hr class="dropdown-divider">
-              <div class="dropdown-item" @click="getBooksByYear">
-                Latest
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column search">
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input
-            class="form-control mr-sm-2"
-            type="search"
-            placeholder="Search..."
-            aria-label="Search"
-            v-model="search"
-            @input="searchBooks"/>
-        </div>
-      </div>
-      <div class="column button-login">
-        <router-link to="/auth/login" class="button is-black">Login</router-link>
-      </div>
-    </nav>
-    <nav class="columns is-gapless custom-navbar" v-else>
-      <Sidebar :name="this.name" />
-      <div class="toggle-menu" @click="sidebarShow">
-        <img src="../assets/img/menu.png" alt="toggle-menu">
-      </div>
-      <div class="column sort-book">
-        <div class="dropdown satu">
-          <div class="dropdown-trigger">
-            <a class="button" aria-haspopup="true" aria-controls="dropdown-menu"
-            @click="active1">
-              <span>Sort Book</span>
-              <span class="icon is-small">
-                <i class="fas fa-angle-down" aria-hidden="true"></i>
-              </span>
-            </a>
-          </div>
-          <div class="dropdown-menu" id="dropdown-menu" role="menu">
-            <div class="dropdown-content">
-              <div class="dropdown-item" @click="getBooksByTitle">
-                By Title
-              </div>
-              <hr class="dropdown-divider">
-              <div class="dropdown-item" @click="getBooksByAuthor">
-                By Author
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="dropdown dua">
-          <div class="dropdown-trigger">
-            <a class="button" aria-haspopup="true" aria-controls="dropdown-menu"
-            @click="active2">
-              <span>All Time</span>
-              <span class="icon is-small">
-                <i class="fas fa-angle-down" aria-hidden="true"></i>
-              </span>
-            </a>
-          </div>
-          <div class="dropdown-menu" id="dropdown-menu" role="menu">
-            <div class="dropdown-content">
-              <div class="dropdown-item" @click="getBooksByYear2">
-                Newest
-              </div>
-              <hr class="dropdown-divider">
-              <div class="dropdown-item" @click="getBooksByYear">
-                Latest
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column search">
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input
-            class="form-control mr-sm-2"
-            type="search"
-            placeholder="Search..."
-            aria-label="Search"
-            v-model="search"
-            @input="searchBooks"/>
-        </div>
-      </div>
-      <div class="column navbar-brand">
-        <router-link to="/">
-        <img src="../assets/img/bookshelf.png" alt="logo" height="40px" width="40px">
-        </router-link>
-        <router-link to="/" class="back-home">Library</router-link>
-      </div>
-    </nav>
+    <Navbar @title="sortByTitle" @author="sortByAuthor" @newest="newest" @latest="latest"
+    @search="search" />
     <Slider class="slider" />
     <div class="book">
       <h1>List Book</h1>
       <div class="list-book">
-        <div class="cards" v-for="book in books" :key="book.id">
-          <router-link :to="'book/detail/' + book.id">
-          <Card :bookTitle="book.title" :bookAuthor="book.author" :image="book.image"
-          :year="book.publishedAt" />
+        <div class="cards" v-for="data in books" :key="data.id">
+          <router-link :to="'book/detail/' + data.id">
+          <Card :bookTitle="data.title" :bookAuthor="data.author" :image="data.image"
+          :year="data.publishedAt" />
           </router-link>
         </div>
       </div>
       <nav class="pagination is-centered" role="navigation" aria-label="pagination">
         <ul class="pagination-list">
           <li><a class="pagination-previous" @click="prevPages">Previous</a></li>
-            <li class="pagination-gap" v-for="page in this.totalPage" :key="page.id"
-            @click="pages(page)">
-              <div class="pagination-link is-current" v-if="page == currentPage">{{ page }}</div>
-              <div class="pagination-link" v-else>{{ page }}</div>
-            </li>
           <li><a class="pagination-next" @click="nextPages">Next page</a></li>
         </ul>
       </nav>
@@ -168,176 +24,62 @@
 </template>
 
 <script>
-import axios from 'axios';
-// import Navbar from '../components/Navbar.vue';
+import { mapActions, mapState } from 'vuex';
 import Slider from '../components/Slider.vue';
 import Card from '../components/Card.vue';
-import Sidebar from '../components/Sidebar.vue';
-// import Pagination from '../components/Pagination.vue';
-// import HomeNav from '../components/HomeNav.vue';
+import Navbar from '../components/Navbar.vue';
 
 export default {
   name: 'Dashboard',
   components: {
-    // Navbar,
     Slider,
     Card,
-    Sidebar,
-    // Pagination,
-    // HomeNav,
+    Navbar,
   },
   data() {
     return {
       items: [],
       isLogin: false,
-      books: [],
-      currentPage: 1,
-      totalPage: [],
-      offset: null,
-      limit: 8,
-      sort: null,
-      search: null,
-      name: null,
-      url: process.env.VUE_APP_BASE_URL,
-      page: 'book?page=',
+      page: 1,
     };
   },
   created() {
-    this.items = JSON.parse(localStorage.getItem('items'));
-    // console.log(this.items);
-    if (this.items) {
-      this.isLogin = this.items.isLogin;
-    }
+    this.getLocalData();
   },
   methods: {
-    pages(id) {
-      this.currentPage = 0 + id;
-      axios
-        .get(this.url + this.page + this.currentPage)
-        .then((res) => {
-          this.totalPage = Math.ceil(res.data.books.count / this.limit);
-          this.books = res.data.books.rows;
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
+    ...mapActions('user', ['getLocalData']),
+    ...mapActions('book', ['readAllBooks']),
+    sortByTitle() {
+      this.readAllBooks({ page: this.page, data: '&title=ASC' });
     },
-    sidebarShow() {
-      const sidebar = document.querySelector('.sidebar');
-      sidebar.classList.toggle('show-sidebar');
-      // console.log('Navbar');
+    sortByAuthor() {
+      this.readAllBooks({ page: this.page, data: '&author=ASC' });
     },
-    active1() {
-      const dropdown1 = document.querySelector('.satu');
-      dropdown1.classList.toggle('is-active');
+    search(data) {
+      // console.log(data);
+      this.readAllBooks({ page: this.page, data: '&search=' + data }); // eslint-disable-line
     },
-    active2() {
-      const dropdown2 = document.querySelector('.dua');
-      dropdown2.classList.toggle('is-active');
-      // console.log(this.sort);
+    newest() {
+      this.readAllBooks({ page: this.page, data: '&year=DESC' });
     },
-    getAllBooks() {
-      // this.nextPages();
-      // this.prevPages();
-      axios
-        .get(this.url + this.page + this.currentPage)
-        // .get('http://localhost:5000/api/library/book?page=2')
-        .then((res) => {
-          this.totalPage = Math.ceil(res.data.books.count / this.limit);
-          this.books = res.data.books.rows;
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
-    },
-    getBooksByTitle() {
-      this.sort = '&title=ASC';
-      axios
-        .get(this.url + this.page + this.currentPage + this.sort)
-        .then((res) => {
-          this.books = res.data.books.rows;
-          // console.log(res.data.books.rows);
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
-    },
-    getBooksByAuthor() {
-      this.sort = '&author=ASC';
-      axios
-        .get(this.url + this.page + this.currentPage + this.sort)
-        .then((res) => {
-          this.books = res.data.books.rows;
-          // console.log(res.data.books.rows);
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
-    },
-    getBooksByYear() {
-      this.sort = '&year=ASC';
-      axios
-        .get(this.url + this.page + this.currentPage + this.sort)
-        .then((res) => {
-          this.books = res.data.books.rows;
-          // console.log(res.data.books.rows);
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
-    },
-    getBooksByYear2() {
-      this.sort = '&year=DESC';
-      axios
-        .get(this.url + this.page + this.currentPage + this.sort)
-        .then((res) => {
-          this.books = res.data.books.rows;
-          // console.log(res.data.books.rows);
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
-    },
-    searchBooks() {
-      this.sort = `book/?search=${this.search}`;
-      axios
-        .get(this.url + this.sort)
-        .then((res) => {
-          this.books = res.data.books.rows;
-          // console.log(res);
-          const slider = document.querySelector('.slider');
-          const book = document.querySelector('.book');
-          if (this.search) {
-            slider.style.display = 'none';
-            book.style.paddingTop = '100px';
-          } else {
-            slider.style.display = 'block';
-            book.style.paddingTop = '50px';
-          }
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
+    latest() {
+      this.readAllBooks({ page: this.page, data: '&year=ASC' });
     },
     nextPages() {
-      if (this.currentPage === this.totalPage) {
-        this.currentPage = this.totalPage;
-      } else {
-        this.currentPage += 1;
-      }
-      this.getAllBooks();
+      this.page += 1;
+      this.readAllBooks({ page: this.page, data: this.sort });
     },
     prevPages() {
-      if (this.currentPage === 1) {
-        this.currentPage = 1;
-      } else {
-        this.currentPage -= 1;
-      }
-      this.getAllBooks();
+      this.page -= 1;
+      this.readAllBooks({ page: this.page, data: this.sort });
     },
   },
   mounted() {
-    this.getAllBooks();
+    this.readAllBooks({ page: this.page, data: '' });
+  },
+  computed: {
+    ...mapState('book', ['books', 'sort']),
+    ...mapState('user', ['local']),
   },
 };
 </script>

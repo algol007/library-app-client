@@ -7,7 +7,7 @@
           <img src="../assets/img/bookshelf.png" alt="Logo" height="80px" width="80px">
         </router-link>
         <div class="auth-intro">
-          <h1 @click="activate">Login</h1>
+          <h1>Login</h1>
           <h5>Welcome back, Please login</h5>
           <h5>to your account</h5>
         </div>
@@ -43,86 +43,55 @@
 <script>
 import axios from 'axios';
 import Auth from '../components/templates/Auth.vue';
-// import FormLogin from '../components/FormLogin.vue';
 import Checkbox from '../components/Checkbox.vue';
 
 export default {
   name: 'Login',
   components: {
     Auth,
-    // FormLogin,
     Checkbox,
   },
   data() {
     return {
-      items: [],
-      isLogin: true,
       email: null,
       password: null,
-      userId: null,
-      query: null,
       token: null,
-      url: process.env.VUE_APP_BASE_URL,
-      page: null,
     };
   },
   created() {
-    const token = this.$route.query;
-    const userToken = token.token;
-    // console.log(userToken);
-    if (userToken) {
-      this.token = userToken;
+    const token = this.$route.query.token; // eslint-disable-line
+    console.log(token);
+    if (token) {
+      this.token = token;
       this.activate();
     }
   },
   methods: {
-    localData() {
-      const parsed = JSON.stringify({ isLogin: true, id: this.userId, token: this.token });
-      // const parsed = JSON.stringify({ isLogin: true, id: 1 });
-      localStorage.setItem('items', parsed);
-    },
     activate() {
-      this.page = 'user/activation?token=';
       axios
-        .patch(this.url + this.page + this.token, {
+        .patch(process.env.VUE_APP_BASE_URL + 'user/activation?token=' + this.token, { //eslint-disable-line
           isActive: 1,
-        })
-        .then(() => {
+        }).then(() => {
           // console.log(res);
-        })
-        .catch(() => {
-          // console.log(err);
         });
     },
-    signIn(event) {
-      event.preventDefault();
-      this.page = 'auth/signin';
+    signIn(e) {
+      e.preventDefault();
       axios
-        .post(this.url + this.page, {
+        .post(process.env.VUE_APP_BASE_URL + 'auth/signin', { //eslint-disable-line
           email: this.email,
           password: this.password,
         })
         .then((res) => {
-          // console.log(res.data.user);
-          this.userId = res.data.user;
-          this.token = res.data.token;
-          // console.log(this.token);
+          // console.log(res);
+          localStorage.setItem('items', JSON.stringify(res.data));
           this.$swal.fire({
             icon: 'success',
             html: 'Login Success!',
             showConfirmButton: false,
             timer: 3000,
           });
-          this.localData();
           this.$router.push('/');
-        })
-        .catch(() => {
-          this.$swal.fire({
-            icon: 'error',
-            html: 'Wrong Password!',
-            showConfirmButton: false,
-            timer: 3000,
-          });
         });
     },
   },
