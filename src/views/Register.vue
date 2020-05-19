@@ -14,27 +14,31 @@
         <form @submit="signUp" class="form">
           <div class="form-group">
             <label for="name">Fullname</label>
-            <input type="name" name="name" id="name" placeholder="Fullname" v-model="name" required>
+            <input type="name" name="name" id="name" placeholder="Fullname"
+            v-model="user.name" required>
           </div>
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" name="email" id="email" placeholder="Email Address" v-model="email"
+            <input type="email" name="email" id="email" placeholder="Email Address"
+            v-model="user.email"
             required>
           </div>
           <div class="form-group">
             <label for="password">Password</label>
             <input type="password" name="password" id="password" placeholder="Password"
-            v-model="password" required>
+            v-model="user.password" required>
           </div>
-          <!-- <span class="error-message" v-if="this.message.length">{{ this.message }}</span> -->
-          <span class="error-message" v-if="this.message1.length">{{ this.message1 }}</span>
-          <!-- <span class="error-message" v-else></span> -->
+          <span class="error-message"
+          v-if="user.password.length > 0 && user.password.length < 4">
+          Password must contains at least 4 characters</span>
           <div class="form-group">
             <label for="password2">Repeat Password</label>
             <input type="password" name="password2" id="password2" placeholder="Repeat Password"
             v-model="password2" required>
           </div>
-          <span class="error-message" v-if="this.message2.length">{{ this.message2 }}</span>
+          <span class="error-message"
+          v-if="password2.length > 0 && password2.length < 4">
+          Password must contains at least 4 characters</span>
           <div class="button-group">
             <button type="submit" class="button is-black">Signup</button>
             <router-link to='/auth/login' class="button is-white">Login</router-link>
@@ -67,47 +71,18 @@ export default {
   },
   data() {
     return {
-      name: null,
-      email: null,
-      password: null,
-      password2: null,
-      message1: [],
-      message2: [],
-      url: process.env.VUE_APP_BASE_URL,
-      page: null,
+      user: {
+        name: null,
+        email: null,
+        password: '',
+      },
+      password2: '',
     };
   },
-  watch: {
-    password(value) {
-      this.password = value;
-      // console.log(value);
-      this.checkPassword(value);
-    },
-    password2(value) {
-      this.password2 = value;
-      // console.log(value);
-      this.checkPassword2(value);
-    },
-  },
   methods: {
-    checkPassword(value) {
-      if (value.length < 4) {
-        this.message1 = 'Password must contains at least 4 characters';
-      } else {
-        this.message1 = '';
-      }
-    },
-    checkPassword2(value) {
-      if (value.length < 4) {
-        this.message2 = 'Password must contains at least 4 characters';
-      } else {
-        this.message2 = '';
-      }
-    },
     signUp(event) {
       event.preventDefault();
-      if (this.password !== this.password2) {
-        // console.log('Password tidak sama!');
+      if (this.user.password !== this.password2) {
         this.$swal.fire({
           icon: 'error',
           html: 'Password not match!',
@@ -115,25 +90,21 @@ export default {
           timer: 3000,
         });
       } else {
-        this.page = 'auth/signup';
         axios
-          .post(this.url + this.page, {
-            name: this.name,
-            email: this.email,
-            password: this.password,
+          .post(process.env.VUE_APP_BASE_URL + 'auth/signup', { // eslint-disable-line
+            name: this.user.name,
+            email: this.user.email,
+            password: this.user.password,
           })
-          .then(() => {
-            this.$router.push('/auth/login');
-            // console.log(res);
+          .then((res) => {
+            console.log(res);
             this.$swal.fire({
               icon: 'success',
               title: 'Your account has been created.',
               text: 'Please check your email to activate!',
               footer: "<a href='https://gmail.com/'>Check my email..</a>",
             });
-          })
-          .catch(() => {
-            // console.log(err);
+            this.$router.push('/auth/login');
           });
       }
     },
@@ -203,7 +174,7 @@ export default {
   }
   .error-message{
     color: rgb(250, 0, 0);
-    font-size: 14px;
+    font-size: 12px;
     padding-left: 10px;
   }
   @media (max-width: 992px) {

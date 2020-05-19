@@ -6,7 +6,7 @@
         <div class="nav-back">
           <router-link to="/"><div class="back"></div></router-link>
         </div>
-        <div class="nav-option" v-if="this.items.role == 'admin'">
+        <div class="nav-option" v-if="this.user.role == 'admin'">
           <button @click="showModal">Edit</button>
           <button @click="deleteBook">Delete</button>
         </div>
@@ -20,7 +20,7 @@
           <div class="column desc-box">
             <div class="category">
               <button class="button is-rounded is-warning">
-                {{ this.name }}
+                {{ book.bookCategory.name }}
                 </button>
             </div>
             <div class="desc-title">{{ book.title }}</div>
@@ -41,129 +41,18 @@
       </div>
     </div>
 
-    <!-- Modal -->
-
-    <div class="modal">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Add Book</p>
-          <button class="delete" aria-label="close" @click="showModal"></button>
-        </header>
-        <form @submit="updateBook" class="modal-card-body">
-          <div class="form-login">
-            <label for="title">Title</label>
-            <input name="Title" id="title" placeholder="Title" v-model="title" required/>
-          </div>
-          <div class="form-login">
-            <label for="image">Image</label>
-            <input type="file" name="image" id="image" ref="file" @change="upload"
-            required/>
-          </div>
-          <div class="form-login">
-            <label for="author">Author</label>
-            <input name="author" id="author" placeholder="Author" v-model="author" required/>
-          </div>
-          <div class="form-login">
-            <label for="isbn">ISBN</label>
-            <input name="isbn" id="isbn" placeholder="ISBN" v-model="isbn" required/>
-          </div>
-          <div class="form-login">
-            <label for="totalPage">Total Page</label>
-            <input type="number" name="totalPage" id="totalPage" placeholder="Total Page"
-            v-model="totalPage"
-            required/>
-          </div>
-          <div class="form-login">
-            <label for="categoryId">Category</label>
-            <select name="categoryId" id="categoryId" v-model="categoryId" required>
-              <option value="1">Novel</option>
-              <option value="2">Komik</option>
-              <option value="3">Sastra</option>
-              <option value="4">Bisnis</option>
-              <option value="5">Travel</option>
-              <option value="6">Design</option>
-              <option value="7">Sejarah</option>
-              <option value="8">Hukum</option>
-              <option value="9">Matematika</option>
-              <option value="10">Teknologi</option>
-              <option value="11">Majalah</option>
-              <option value="12">Fiksi</option>
-            </select>
-          </div>
-          <div class="form-login">
-            <label for="price">Price</label>
-            <input type="number" name="price" id="price" placeholder="Price" v-model="price"
-            required/>
-          </div>
-          <div class="form-login">
-            <label for="language">Language</label>
-            <input name="language" id="language" placeholder="Language" v-model="language"
-            required/>
-          </div>
-          <div class="form-login">
-            <label for="publishedBy">Publisher</label>
-            <input name="publishedBy" id="publishedBy" placeholder="Publisher"
-            v-model="publishedBy" required/>
-          </div>
-          <div class="form-login">
-            <label for="publishedAt">Published On</label>
-            <input name="publishedAt" id="publishedAt" placeholder="Published On"
-            v-model="publishedAt" required/>
-          </div>
-          <div class="form-login">
-            <label for="description">Description</label>
-            <textarea name="description" id="description" placeholder="Description"
-            v-model="description"
-            rows="5" required/>
-          </div>
-          <footer class="button-save">
-            <button class="button is-warning" type="submit">
-              Save</button>
-          </footer>
-        </form>
-      </div>
-    </div>
-
   </section>
 </template>
 
 <script>
 import axios from 'axios';
+import { mapState, mapActions } from 'vuex';
 // import DetailBook from '../components/templates/Detail.vue';
 
 export default {
   name: 'Detail',
-  data() {
-    return {
-      title: null,
-      image: null,
-      author: null,
-      isbn: null,
-      totalPage: null,
-      categoryId: null,
-      price: null,
-      description: null,
-      language: null,
-      publishedBy: null,
-      publishedAt: null,
-      book: [],
-      bookId: null,
-      isLogin: false,
-      items: [],
-      name: null,
-      url: process.env.VUE_APP_BASE_URL,
-      page: null,
-    };
-  },
-  created() {
-    this.items = { role: 'user' };
-    const local = JSON.parse(localStorage.getItem('items'));
-    if (local) {
-      this.items = local;
-    }
-  },
   methods: {
+    ...mapActions('book', ['readBookById']),
     upload() {
       const file = this.$refs.file.files[0];
       this.image = file;
@@ -236,28 +125,6 @@ export default {
           // console.log('Error when load data!');
         });
     },
-    getBookById() {
-      this.page = 'book/';
-      axios.get(this.url + this.page + this.$route.params.id)
-        .then((res) => {
-          this.book = res.data.data;
-          this.name = this.book.bookCategory.name;
-          this.title = this.book.title;
-          this.image = this.book.image;
-          this.author = this.book.author;
-          this.isbn = this.book.isbn;
-          this.totalPage = this.book.totalPage;
-          this.categoryId = this.book.categoryId;
-          this.price = this.book.price;
-          this.description = this.book.description;
-          this.language = this.book.language;
-          this.publishedBy = this.book.publishedBy;
-          this.publishedAt = this.book.publishedAt;
-        })
-        .catch(() => {
-          // console.log(err);
-        });
-    },
     addBorrow() {
       if (this.items.isLogin === true) {
         this.bookId = this.$route.params.id;
@@ -293,16 +160,15 @@ export default {
   },
   computed: {
     img() {
-      // const original = this.book.image;
-      // const image = original.replace(/ /g, '%');
       return {
         backgroundImage: `url(${this.book.image})`,
-        // backgroundImage: `url(${image})`,
       };
     },
+    ...mapState('user', ['user']),
+    ...mapState('book', ['book']),
   },
   mounted() {
-    this.getBookById();
+    this.readBookById(this.$route.params.id);
   },
 };
 </script>
