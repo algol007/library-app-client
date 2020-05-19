@@ -18,11 +18,11 @@
       <div class="column is-9 desc">
         <div class="availability">
           <div class="column desc-box">
-            <div class="category">
+            <!-- <div class="category">
               <button class="button is-rounded is-warning">
                 {{ book.bookCategory.name }}
                 </button>
-            </div>
+            </div> -->
             <div class="desc-title">{{ book.title }}</div>
             <div class="desc-subtitle">{{ book.author }}</div>
           </div>
@@ -40,17 +40,98 @@
         <button class="button is-warning" @click="addBorrow">Borrow</button>
       </div>
     </div>
-
+    <Modal modalTitle="Edit Book">
+      <form @submit="editBook" class="modal-card-body">
+        <div class="form-login">
+          <label for="title">Title</label>
+          <input name="Title" id="title" placeholder="Title" v-model="book.title" required/>
+        </div>
+        <div class="form-login">
+          <label for="image">Image</label>
+          <input type="file" name="image" id="image" ref="file" @change="upload"
+          required/>
+        </div>
+        <div class="form-login">
+          <label for="author">Author</label>
+          <input name="author" id="author" placeholder="Author" v-model="book.author" required/>
+        </div>
+        <div class="form-login">
+          <label for="isbn">ISBN</label>
+          <input name="isbn" id="isbn" placeholder="ISBN" v-model="book.isbn" required/>
+        </div>
+        <div class="form-login">
+          <label for="totalPage">Total Page</label>
+          <input type="number" name="totalPage" id="totalPage" placeholder="Total Page"
+          v-model="book.totalPage"
+          required/>
+        </div>
+        <div class="form-login">
+          <label for="categoryId">Category</label>
+          <select name="categoryId" id="categoryId" v-model="book.categoryId" required>
+            <option value="1">Novel</option>
+            <option value="2">Komik</option>
+            <option value="3">Sastra</option>
+            <option value="4">Bisnis</option>
+            <option value="5">Travel</option>
+            <option value="6">Design</option>
+            <option value="7">Sejarah</option>
+            <option value="8">Hukum</option>
+            <option value="9">Matematika</option>
+            <option value="10">Teknologi</option>
+            <option value="11">Majalah</option>
+            <option value="12">Fiksi</option>
+          </select>
+        </div>
+        <div class="form-login">
+          <label for="price">Price</label>
+          <input type="number" name="price" id="price" placeholder="Price" v-model="book.price"
+          required/>
+        </div>
+        <div class="form-login">
+          <label for="language">Language</label>
+          <input name="language" id="language" placeholder="Language" v-model="book.language"
+          required/>
+        </div>
+        <div class="form-login">
+          <label for="publishedBy">Publisher</label>
+          <input name="publishedBy" id="publishedBy" placeholder="Publisher"
+          v-model="book.publishedBy" required/>
+        </div>
+        <div class="form-login">
+          <label for="publishedAt">Published On</label>
+          <input name="publishedAt" id="publishedAt" placeholder="Published On"
+          v-model="book.publishedAt" required/>
+        </div>
+        <div class="form-login">
+          <label for="description">Description</label>
+          <textarea name="description" id="description" placeholder="Description"
+          v-model="book.description"
+          rows="5" required/>
+        </div>
+        <footer class="button-save">
+          <button class="button is-warning" type="submit">
+            Save</button>
+        </footer>
+      </form>
+    </Modal>
   </section>
 </template>
 
 <script>
 import axios from 'axios';
 import { mapState, mapActions } from 'vuex';
-// import DetailBook from '../components/templates/Detail.vue';
+import Modal from '../components/Modal.vue';
 
 export default {
   name: 'Detail',
+  components: {
+    Modal,
+  },
+  data() {
+    return {
+      image: '',
+    };
+  },
   methods: {
     ...mapActions('book', ['readBookById']),
     upload() {
@@ -60,7 +141,6 @@ export default {
     showModal() {
       const modal = document.querySelector('.modal');
       modal.classList.toggle('is-active');
-      // console.log(this.book.bookCategory);
     },
     deleteBook() {
       this.$swal.fire({
@@ -73,12 +153,10 @@ export default {
       })
         .then((result) => {
           if (result.value) {
-            this.page = 'admin/book/';
             axios
-              .delete(this.url + this.page + this.$route.params.id,
-                { headers: { 'baca-bismillah': this.items.token } })
+              .delete(process.env.VUE_APP_BASE_URL + 'admin/book/' + // eslint-disable-line
+              this.$route.params.id, { headers: { 'baca-bismillah': this.local.token } })
               .then(() => {
-                // console.log(res);
                 this.$swal.fire({
                   icon: 'success',
                   html: `Book ${this.book.title} has been deleted!`,
@@ -90,27 +168,24 @@ export default {
           }
         });
     },
-    updateBook(event) {
+    editBook(event) {
       event.preventDefault();
       const formData = new FormData();
-      formData.append('title', this.title);
-      formData.append('image', this.image);
-      formData.append('author', this.author);
-      formData.append('isbn', this.isbn);
-      formData.append('totalPage', this.totalPage);
-      formData.append('categoryId', this.categoryId);
-      formData.append('price', this.price);
-      formData.append('description', this.description);
-      formData.append('language', this.language);
-      formData.append('publishedBy', this.publishedBy);
-      formData.append('publishedAt', this.publishedAt);
-      this.page = 'admin/book/';
+      formData.append('title', this.book.title);
+      formData.append('image', this.book.image);
+      formData.append('author', this.book.author);
+      formData.append('isbn', this.book.isbn);
+      formData.append('totalPage', this.book.totalPage);
+      formData.append('categoryId', this.book.categoryId);
+      formData.append('price', this.book.price);
+      formData.append('description', this.book.description);
+      formData.append('language', this.book.language);
+      formData.append('publishedBy', this.book.publishedBy);
+      formData.append('publishedAt', this.book.publishedAt);
       axios
-        .put(this.url + this.page + this.$route.params.id, formData,
-          { headers: { 'baca-bismillah': this.items.token } })
+        .put(process.env.VUE_APP_BASE_URL + 'admin/book/' + this.$route.params.id, // eslint-disable-line
+          formData, { headers: { 'baca-bismillah': this.items.token } })
         .then(() => {
-          // console.log(${this.$route.params.id});
-          // console.log(res);
           this.$swal.fire({
             icon: 'success',
             html: `Book ${this.book.title} has been updated!`,
@@ -126,27 +201,21 @@ export default {
         });
     },
     addBorrow() {
-      if (this.items.isLogin === true) {
-        this.bookId = this.$route.params.id;
-        this.page = 'cart';
+      if (this.local !== null) {
         axios
-          .post(this.url + this.page, {
-            bookId: this.bookId,
+          .post(process.env.VUE_APP_BASE_URL + 'cart', { // eslint-disable-line
+            bookId: this.$route.params.id,
             userId: this.items.id,
             status: 0,
           },
           { headers: { 'baca-bismillah': this.items.token } })
           .then(() => {
-            // console.log(res);
             this.$swal.fire({
               icon: 'success',
               html: `Book ${this.book.title} has been borrowed!`,
               showConfirmButton: false,
               timer: 3000,
             });
-          })
-          .catch(() => {
-            // console.log(err);
           });
       } else {
         this.$swal.fire({
@@ -164,7 +233,7 @@ export default {
         backgroundImage: `url(${this.book.image})`,
       };
     },
-    ...mapState('user', ['user']),
+    ...mapState('user', ['user', 'local']),
     ...mapState('book', ['book']),
   },
   mounted() {

@@ -25,8 +25,9 @@ export default ({
       const parsed = JSON.parse(localStorage.getItem('items'));
       context.commit('local', parsed);
     },
-    removeLocalData(context) {
+    signout(context) {
       context.commit('local', 0);
+      context.commit('user', 0);
     },
     readUser(context, id) {
       axios
