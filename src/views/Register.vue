@@ -96,8 +96,8 @@ export default {
             email: this.user.email,
             password: this.user.password,
           })
-          .then((res) => {
-            console.log(res);
+          .then(() => {
+            // console.log(res);
             this.$swal.fire({
               icon: 'success',
               title: 'Your account has been created.',

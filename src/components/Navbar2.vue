@@ -1,7 +1,6 @@
 <template>
   <nav class="columns is-gapless custom-navbar">
     <div class="toggle-menu" @click="sidebarShow">
-      <Sidebar/>
       <img src="../assets/img/menu.png" alt="toggle-menu">
     </div>
     <div class="column navbar-brand">
@@ -10,6 +9,7 @@
       </router-link>
       <router-link to="/" class="back-home">Library</router-link>
     </div>
+    <Sidebar />
   </nav>
 </template>
 
@@ -29,7 +29,7 @@ export default {
     },
   },
   computed: {
-    ...mapState('user', ['local']),
+    ...mapState('user', ['local', 'user']),
   },
 };
 </script>
@@ -71,20 +71,6 @@ export default {
   .button{
     border: none;
   }
-  .search-box {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: 1px solid #ced4da;
-  }
-  .search-box input{
-    width: 100%;
-    margin-left: 10px;
-    border: none;
-    outline: none;
-  }
   .navbar-brand{
     display: flex;
     align-items: center;
@@ -99,18 +85,5 @@ export default {
   }
   .navbar-brand .back-home{
     color: #424242;
-  }
-  .dropdown-item{
-    cursor: pointer;
-  }
-  @media (max-width: 768px) {
-    .sort-book {
-      display: none;
-    }
-  }
-  @media (max-width: 450px) {
-    .search-box {
-      display: none;
-    }
   }
 </style>

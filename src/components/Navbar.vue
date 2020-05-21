@@ -1,7 +1,6 @@
 <template>
   <nav class="columns is-gapless custom-navbar">
     <div class="toggle-menu" @click="sidebarShow" v-if="this.local !== null">
-      <Sidebar/>
       <img src="../assets/img/menu.png" alt="toggle-menu">
     </div>
     <div class="column navbar-brand logo" v-else>
@@ -76,6 +75,7 @@
     <div class="column button-login" v-else>
       <router-link to="/auth/login" class="button is-black">Login</router-link>
     </div>
+    <Sidebar v-if="this.local !== null"/>
   </nav>
 </template>
 

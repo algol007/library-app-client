@@ -205,10 +205,9 @@ export default {
         axios
           .post(process.env.VUE_APP_BASE_URL + 'cart', { // eslint-disable-line
             bookId: this.$route.params.id,
-            userId: this.items.id,
-            status: 0,
-          },
-          { headers: { 'baca-bismillah': this.items.token } })
+            userId: this.local.user,
+            status: 1,
+          }, { headers: { 'baca-bismillah': this.local.token } })
           .then(() => {
             this.$swal.fire({
               icon: 'success',
@@ -216,6 +215,7 @@ export default {
               showConfirmButton: false,
               timer: 3000,
             });
+            this.$router.push('/history');
           });
       } else {
         this.$swal.fire({

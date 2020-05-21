@@ -1,6 +1,6 @@
 <template>
     <section>
-      <Navbar />
+      <Navbar2 />
       <div class="my-profile profile">
         <div class="card">
           <header class="card-header">
@@ -13,8 +13,8 @@
               <div class="user-photo" :style="img">
               </div>
               <div class="user-profile">
-                <h3>{{ this.user.name }}</h3>
-                <h5 class="user-email">{{ this.user.email }}</h5>
+                <h3>{{ user.name }}</h3>
+                <h5 class="user-email">{{ user.email }}</h5>
               </div>
             </div>
             <button class="button is-fullwidth is-success" @click="editProfile">
@@ -55,7 +55,8 @@
                   <input class="input" type="password" placeholder="New Password" required
                   v-model="password">
                 </div>
-                <span class="error-message" v-if="this.message1.length">{{ this.message1 }}</span>
+                <!-- <span class="error-message" v-if="this.message1.length">{{ this.message1 }}
+                  </span> -->
               </div>
               <div class="field">
                 <label class="label">Confirm Password</label>
@@ -63,7 +64,8 @@
                   <input class="input" type="password" placeholder="Confirm Password" required
                   v-model="password2">
                 </div>
-                <span class="error-message" v-if="this.message2.length">{{ this.message2 }}</span>
+                <!-- <span class="error-message" v-if="this.message2.length">{{ this.message2 }}
+                  </span> -->
               </div>
               <hr>
               <button class="button is-half is-success save">Save Profile</button>
@@ -76,38 +78,21 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
 import axios from 'axios';
-import Navbar from '../components/Navbar.vue';
+import Navbar2 from '../components/Navbar2.vue';
 
 export default {
   name: 'Profile',
   components: {
-    Navbar,
+    Navbar2,
   },
   data() {
     return {
-      items: [],
-      url: process.env.VUE_APP_BASE_URL,
-      user: [],
-      page: null,
-      password: null,
-      password2: null,
-      message1: [],
-      message2: [],
-      image: null,
+      password: '',
+      password2: '',
+      image: '',
     };
-  },
-  watch: {
-    password(value) {
-      this.password = value;
-      // console.log(value);
-      this.checkPassword(value);
-    },
-    password2(value) {
-      this.password2 = value;
-      // console.log(value);
-      this.checkPassword2(value);
-    },
   },
   computed: {
     img() {
@@ -115,58 +100,24 @@ export default {
         backgroundImage: `url(${this.user.image})`,
       };
     },
-  },
-  created() {
-    this.items = JSON.parse(localStorage.getItem('items'));
-  },
-  mounted() {
-    this.getUserById();
+    ...mapState('user', ['user', 'local']),
   },
   methods: {
+    ...mapActions('user', ['readUser']),
     upload() {
       const file = this.$refs.file.files[0];
       this.image = file;
     },
-    checkPassword(value) {
-      if (value.length < 4) {
-        this.message1 = 'Password must contains at least 4 characters';
-      } else {
-        this.message1 = '';
-      }
-    },
-    checkPassword2(value) {
-      if (value.length < 4) {
-        this.message2 = 'Password must contains at least 4 characters';
-      } else {
-        this.message2 = '';
-      }
-    },
-    getUserById() {
-      this.page = 'user/';
-      axios
-        .get(this.url + this.page + this.items.id)
-        .then((res) => {
-          this.user = res.data.user;
-          this.name = res.data.user.name;
-          this.email = res.data.user.email;
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
-        });
-    },
     editProfile() {
       const profile = document.querySelector('.edit');
       profile.style.display = 'block';
-      // console.log('Hello');
     },
     cancelEdit() {
       const profile = document.querySelector('.edit');
       profile.style.display = 'none';
-      // console.log('Hello');
     },
-    updateProfile(event) {
-      event.preventDefault();
-      this.page = 'user/';
+    updateProfile(e) {
+      e.preventDefault();
       if (this.password !== this.password2) {
         this.$swal.fire({
           icon: 'error',
@@ -181,8 +132,8 @@ export default {
         formData.append('password', this.password);
         formData.append('image', this.image);
         axios
-          .put(this.url + this.page + this.items.id, formData,
-            { headers: { 'baca-bismillah': this.items.token } })
+          .put(process.env.VUE_APP_BASE_URL + 'user/' + this.user.id, // eslint-disable-line
+            formData, { headers: { 'baca-bismillah': this.local.token } })
           .then(() => {
             this.$swal.fire({
               icon: 'success',
@@ -190,10 +141,8 @@ export default {
               showConfirmButton: false,
               timer: 3000,
             });
-            this.$router.go();
-          })
-          .catch(() => {
-
+            this.readUser(this.local.user);
+            this.cancelEdit();
           });
       }
     },

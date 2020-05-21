@@ -11,16 +11,14 @@
     </thead>
     <tbody v-for="cart in carts" :key="cart.id">
       <tr>
-        <!-- <td><img :src="cart.bookCart.image" alt="book" width="80" height="100"></td>
-        <td>{{ cart.bookCart.title }}
-          <p class="username">{{ cart.userCart.name }}</p>
-        </td>
-        <td>{{ cart.createdAt }}</td>
+        <td><img :src="cart.bookCart.image" alt="book" width="60" height="80"></td>
+        <td>{{ cart.bookCart.title }}</td>
+        <td>{{ cart.createdAt.slice(0,10) }}</td>
         <td v-if="cart.status == 0">Pending</td>
         <td v-if="cart.status == 1">Borrow</td>
         <td v-if="cart.status == 2">Return</td>
         <td v-if="cart.status == 3" class="text-danger">Penalty</td>
-        <td v-if="role=='admin'" class="buttons are-small">
+        <td v-if="user.role=='admin'" class="buttons are-small">
           <button class="button is-info" @click="cartApproved(cart.id)">
             Approved</button>
           <button class="button is-success" @click="cartReturned(cart.id)">
@@ -32,10 +30,10 @@
           <button class="button is-danger" @click="deleteCart(cart.id)">
             Delete</button>
         </td>
-        <td v-if="role=='user'">
-          <button class="button is-info is-small" @click="seeDetail(cart.bookCart.id)"
-          v-if="role=='user'">Detail</button>
-        </td> -->
+        <td v-if="user.role=='user'">
+          <button class="button is-info is-small" @click="seeDetail(cart.bookCart.id)">
+            Detail</button>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -50,10 +48,11 @@ export default {
     ...mapActions('cart', ['readUserCart']),
   },
   mounted() {
-    this.readUserCart();
+    this.readUserCart(this.local.user);
   },
   computed: {
     ...mapState('cart', ['carts']),
+    ...mapState('user', ['user', 'local']),
   },
 };
 </script>

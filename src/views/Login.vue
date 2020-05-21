@@ -60,7 +60,7 @@ export default {
   },
   created() {
     const token = this.$route.query.token; // eslint-disable-line
-    console.log(token);
+    // console.log(token);
     if (token) {
       this.token = token;
       this.activate();
