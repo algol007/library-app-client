@@ -13,7 +13,7 @@ export default ({
   mutations: {
     local(state, data) {
       state.local = data;
-      console.log(state.local);
+      // console.log(state.local);
     },
     user(state, data) {
       state.user = data;

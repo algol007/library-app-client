@@ -17,7 +17,7 @@ export default ({
     },
     book(state, data) {
       state.book = data;
-      console.log(state.book);
+      // console.log(state.book);
     },
     sort(state, data) {
       state.sort = data;

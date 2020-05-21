@@ -8,17 +8,26 @@ export default ({
   namespaced: true,
   state: {
     carts: [],
+    allCarts: [],
   },
   mutations: {
     carts(state, data) {
-      state.carts = data;
-      console.log(state.carts);
+      const status = data.filter((item) => item.status !== 3);
+      state.carts = status;
+      // console.log(state.carts);
     },
   },
   actions: {
-    readUserCart(context) {
+    readUserCart(context, id) {
       axios
-        .get(process.env.VUE_APP_BASE_URL + 'user/cart/2') // eslint-disable-line
+        .get(process.env.VUE_APP_BASE_URL + 'user/cart/' + id) // eslint-disable-line
+        .then((res) => {
+          context.commit('carts', res.data.carts.rows);
+        });
+    },
+    readAllCarts(context) {
+      axios
+        .get(process.env.VUE_APP_BASE_URL + 'cart') // eslint-disable-line
         .then((res) => {
           context.commit('carts', res.data.carts.rows);
         });

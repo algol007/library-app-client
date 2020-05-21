@@ -2,16 +2,17 @@
   <section class="sidebar">
     <!-- Toggle Button -->
     <div class="menu-button">
-      <button class="sidebar-button" @click="sidebarHide">
-        <img src="../assets/img/menu.png" alt="toggle-menu" />
+      <button class="sidebar-button">
+        <img src="../assets/img/menu.png" alt="toggle-menu" @click="sidebarHide" />
       </button>
     </div>
     <div class="profile">
       <div class="profile-img" :style="img">
       </div>
-      <h4>{{ this.user.name }}</h4>
+      <h4>{{ user.name }}</h4>
     </div>
     <div class="sidebar-menu">
+      <p><router-link to="/" class="menu-list">Explore</router-link></p>
       <p><router-link to="/profile" class="menu-list">My Profile</router-link></p>
       <p><router-link to="/history" class="menu-list">History</router-link></p>
       <p data-toggle="modal" @click="showModal" v-if="this.user.role == 'admin'">Add Book</p>
@@ -105,6 +106,9 @@ export default {
   components: {
     Modal,
   },
+  props: [
+    'username',
+  ],
   data() {
     return {
       book: {
@@ -123,7 +127,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions('user', ['readUser', 'signout']),
+    ...mapActions('user', ['getLocalData', 'readUser', 'signout']),
     ...mapActions('book', ['readAllBooks']),
     upload() {
       const file = this.$refs.file.files[0];
@@ -160,8 +164,8 @@ export default {
       axios
         .post(process.env.VUE_APP_BASE_URL + 'admin/book', formData, // eslint-disable-line
           { headers: { 'baca-bismillah': this.local.token } })
-        .then((res) => {
-          console.log(res);
+        .then(() => {
+          // console.log(res);
           this.$swal.fire({
             icon: 'success',
             html: `Book ${this.book.title} has been created!`,
@@ -183,6 +187,7 @@ export default {
     ...mapState('user', ['local', 'user']),
   },
   mounted() {
+    this.getLocalData();
     this.readUser(this.local.user);
   },
 };
