@@ -172,7 +172,7 @@ export default {
       event.preventDefault();
       const formData = new FormData();
       formData.append('title', this.book.title);
-      formData.append('image', this.book.image);
+      formData.append('image', this.image);
       formData.append('author', this.book.author);
       formData.append('isbn', this.book.isbn);
       formData.append('totalPage', this.book.totalPage);
@@ -184,7 +184,7 @@ export default {
       formData.append('publishedAt', this.book.publishedAt);
       axios
         .put(process.env.VUE_APP_BASE_URL + 'admin/book/' + this.$route.params.id, // eslint-disable-line
-          formData, { headers: { 'baca-bismillah': this.items.token } })
+          formData, { headers: { 'baca-bismillah': this.local.token } })
         .then(() => {
           this.$swal.fire({
             icon: 'success',
@@ -194,10 +194,7 @@ export default {
           });
           const modal = document.querySelector('.modal');
           modal.classList.toggle('is-active');
-          this.$router.go();
-        })
-        .catch(() => {
-          // console.log('Error when load data!');
+          this.readBookById(this.$route.params.id);
         });
     },
     addBorrow() {
