@@ -95,6 +95,8 @@ export default {
             name: this.user.name,
             email: this.user.email,
             password: this.user.password,
+            role: 'user',
+            isActive: 0,
           })
           .then(() => {
             // console.log(res);
