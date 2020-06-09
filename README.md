@@ -1,9 +1,9 @@
 # Library-App
 
-![GitHub repo size](https://img.shields.io/github/repo-size/algol007/arkademy-week5.client)
-![GitHub contributors](https://img.shields.io/github/contributors/algol007/arkademy-week5.client)
-![GitHub stars](https://img.shields.io/github/stars/algol007/arkademy-week5.client?style=social)
-![GitHub forks](https://img.shields.io/github/forks/algol007/arkademy-week5.client?style=social)
+![GitHub repo size](https://img.shields.io/github/repo-size/algol007/library-app-client)
+![GitHub contributors](https://img.shields.io/github/contributors/algol007/library-app-client)
+![GitHub stars](https://img.shields.io/github/stars/algol007/library-app-client?style=social)
+![GitHub forks](https://img.shields.io/github/forks/algol007/library-app-client?style=social)
 
 <p align="center">
   <img height="100" src="https://vuejs.org/images/logo.png">
@@ -29,12 +29,23 @@
 
 ## Requirements
 
-- Node.js - Download and Install [Node.js](https://nodejs.org/en/).
+- Vue.js - Download and Install [Vue.js](https://vuejs.org/).
+
+## Screenshots
+
+<p align='center'>
+  <span>
+      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/register.png' />
+      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/login.png' />
+      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/home.png' />
+      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/detail.png' />
+      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/history.png' />
+</p>
 
 ## Usage for development
 
 1. Open your terminal or command prompt
-2. Type `git clone https://github.com/arkademy-week5.client.git`
+2. Type `git clone https://github.com/library-app-client.git`
 3. Open the folder and type `npm install` for install dependencies
 4. Create Environment Variable [here](#create-environment-variable)
 5. Before run this, you must run [backend first](#related-project-backend)
@@ -65,4 +76,4 @@ Fork the Project
 
 ## Related Project (Backend)
 
-* [`Library-App REST API`](https://github.com/algol007/arkademy-week5.client)
+* [`Library-App REST API`](https://github.com/algol007/library-app-client.git)
