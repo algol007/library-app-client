@@ -35,11 +35,11 @@
 
 <p align='center'>
   <span>
-      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/register.png' />
-      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/login.png' />
-      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/home.png' />
-      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/detail.png' />
-      <image width="200" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/history.png' />
+      <image width="430" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/register.png' />
+      <image width="430" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/login.png' />
+      <image width="430" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/home.png' />
+      <image width="430" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/detail.png' />
+      <image width="430" src='https://github.com/algol007/library-app-client/blob/master/src/assets/library/history.png' />
 </p>
 
 ## Usage for development
