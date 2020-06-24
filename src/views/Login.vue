@@ -83,15 +83,24 @@ export default {
           password: this.password,
         })
         .then((res) => {
-          // console.log(res);
-          localStorage.setItem('items', JSON.stringify(res.data));
-          this.$swal.fire({
-            icon: 'success',
-            html: 'Login Success!',
-            showConfirmButton: false,
-            timer: 3000,
-          });
-          this.$router.push('/');
+          console.log(res);
+          if (res.data.status !== 200) {
+            this.$swal.fire({
+              icon: 'error',
+              html: res.data.message,
+              showConfirmButton: false,
+              timer: 3000,
+            });
+          } else {
+            localStorage.setItem('items', JSON.stringify(res.data));
+            this.$swal.fire({
+              icon: 'success',
+              html: 'Login Success!',
+              showConfirmButton: false,
+              timer: 3000,
+            });
+            this.$router.push('/');
+          }
         });
     },
   },
